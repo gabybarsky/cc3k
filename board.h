@@ -4,7 +4,8 @@
 
 class Board {
     std::string file;
-    std::string *map; // array for storage of the map rows
+    std::string **map; // array for storage of the map rows
+    int currentFloor;
 
     void createBoard();
     public:
@@ -13,6 +14,8 @@ class Board {
         void printBoard();
         char getLocation(int row, int col);
         void modifyLocation(int row, int col, char change);
+        void moveFloor();
+        int getCurrentFloor();
 };
 
 #endif
