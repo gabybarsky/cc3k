@@ -1,10 +1,11 @@
 #ifndef __DROW_H__
 #define __DROW_H__
 #include "player.h"
+#include <vector>
 
 class Drow : public Player {
  public:
-	Drow();
+	Drow(int chamber, std::vector<int> pos);
 	~Drow();
 };
 #endif
