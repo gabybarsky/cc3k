@@ -1,6 +1,12 @@
 #include "character.h"
 using namespace std;
 
+Character::Character(int hp, int atk, int def, char sym, vector<int>pos) : atk(atk), def(def), hp(hp), symbol(sym), position(pos) {
+}
+
+Character::~Character() {
+}
+
 int Character::getAtk() {
 	return atk;
 }

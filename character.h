@@ -2,7 +2,7 @@
 #define __CHARACTER_H__
 #include <string>
 #include <vector>
-#include "../items/gold.h"
+#include "items/gold.h"
 
 class Character {
  protected:
@@ -11,11 +11,11 @@ class Character {
 	int hp;
 	char symbol;
 	std::string special;
-	vector<int> position;
+    std::vector<int> position;
 	
  public:
-	Character();
-	virtual void onTurn() = 0;
+	Character(int hp, int atk, int def, char sym, std::vector<int>pos);
+	//virtual void onTurn() = 0;
 	int getAtk();
 	int getDef();
 	int getHp();
@@ -24,7 +24,7 @@ class Character {
 	int getRow();
 	int getCol();
 	void move(std::string direction);
-	virtual void attack() = 0;
+	//virtual void attack() = 0;
 	~Character();
 };
 
