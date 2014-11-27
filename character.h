@@ -16,6 +16,13 @@ class Character {
  public:
 	Character();
 	virtual void onTurn() = 0;
+	int getAtk();
+	int getDef();
+	int getHp();
+	char getSymbol();
+	string getSpecial();
+	vector<int> getPosition();
+	void move(char direction);
 	~Character();
 };
 
