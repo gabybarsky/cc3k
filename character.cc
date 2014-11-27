@@ -31,6 +31,7 @@ int Character::getCol() {
 	return position[1];
 }
 
+/*
 void Character::move(string direction) {
 	switch(direction) {
 		case "no":
@@ -64,4 +65,4 @@ void Character::move(string direction) {
 		default:
 			cerr<<"Invalid direction"<<endl;
 	}
-}
+}*/

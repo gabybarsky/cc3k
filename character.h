@@ -23,7 +23,6 @@ class Character {
 	std::string getSpecial();
 	int getRow();
 	int getCol();
-	void move(std::string direction);
 	//virtual void attack() = 0;
 	~Character();
 };
