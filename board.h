@@ -2,6 +2,7 @@
 #define __BOARD_H__
 #include <string>
 #include "chamber.h"
+#include "players/player.h"
 
 class Board {
     std::string file;
@@ -12,6 +13,8 @@ class Board {
     void createBoard();
     void generateFloor(int floor);
     public:
+        Player *player;
+
         Board(std::string filename = "");
         ~Board();
         void printBoard();

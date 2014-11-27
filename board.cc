@@ -10,6 +10,7 @@ using namespace std;
  * Constructor for Board. Default value of filename is ""
  */
 Board::Board(string filename) : file(filename) {
+    player = NULL;
     currentFloor = 0;
     chambers = new Chamber*[5];
     map = new string*[5];
@@ -79,6 +80,15 @@ void Board::printBoard() {
     for(int i = 0; i < 25; i++) {
         cout << map[currentFloor][i] << endl;
     }
+    cout << left << "Race: " << left << player->getRace();
+    cout.width(70 - player->getRace().length() - 1);
+    cout << right << "Floor: " << right << player->getFloor() + 1 << endl;
+
+    cout << left;
+    cout << "HP: " << player->getHp() << endl;
+    cout << "Atk: " << player->getAtk() << endl;
+    cout << "Def: " << player->getDef() << endl;
+    cout << "Action: " << player->getAction() << endl;
 }
 
 /*
