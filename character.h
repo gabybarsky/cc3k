@@ -10,9 +10,9 @@ class Character {
 	int def;
 	int hp;
 	char symbol;
-	string special;
+	std::string special;
 	vector<int> position;
-
+	
  public:
 	Character();
 	virtual void onTurn() = 0;
@@ -20,9 +20,11 @@ class Character {
 	int getDef();
 	int getHp();
 	char getSymbol();
-	string getSpecial();
-	vector<int> getPosition();
-	void move(char direction);
+	std::string getSpecial();
+	int getRow();
+	int getCol();
+	void move(std::string direction);
+	virtual void attack() = 0;
 	~Character();
 };
 
