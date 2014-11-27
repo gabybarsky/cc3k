@@ -1,12 +1,14 @@
 #include "chamber.h"
 #include "board.h"
+#include <cstdlib>
+using namespace std;
 
 Chamber::Chamber() {
     id = -1;
     floor = -1;
 }
 
-Chamber::Chamber(int id, int floor) : id(id), floor(floor) {
+Chamber::Chamber(int id, int floor, Board* board) : id(id), floor(floor), board(board) {
     switch(id) {
         case 0:
             topRow = 3;
@@ -47,6 +49,10 @@ Chamber::Chamber(int id, int floor) : id(id), floor(floor) {
 }
 
 Chamber::~Chamber() {
+    for(int i=0; i < width; i++) {
+        delete[] validTile[i];
+    }
+    delete[] validTile;
 }
 
 void Chamber::assignValids() {
@@ -89,7 +95,18 @@ bool Chamber::isValidTile(int col, int row) {
     return validTile[col][row];
 }
 
-void Chamber::generateChamber(Board *board) {
+void Chamber::generatePlayer() {
+    int x = rand() % width;
+    int y = rand() % height;
+
+    while(!isValidTile(x, y)) {
+        x = rand() % width;
+        y = rand() % height;
+    }
+    board->modifyLocation(x + topCol, y + topRow, 0, '@');
+}
+    
+void Chamber::generateChamber() {
 }
 /*
 void Chamber::generateChamber(Board *board) {

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 using namespace std;
 
 /*
@@ -56,13 +57,17 @@ void Board::createBoard() {
         }
         generateFloor(floor);
     }
+
+    srand(time(NULL));
+    int temp = rand() % 5;
+    chambers[temp]->generatePlayer();
     delete in;
 }
 
 void Board::generateFloor(int floor) {
     for(int ch = 0; ch < 5; ch++) {
-        chambers[ch] = new Chamber(ch, floor);
-        chambers[ch]->generateChamber(this);
+        chambers[ch] = new Chamber(ch, floor, this);
+        chambers[ch]->generateChamber();
     }
 }
 
