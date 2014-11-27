@@ -1,19 +1,22 @@
 #ifndef __BOARD_H__
 #define __BOARD_H__
 #include <string>
+#include "chamber.h"
 
 class Board {
     std::string file;
     std::string **map; // array for storage of the map rows
     int currentFloor;
+    Chamber **chambers;
 
     void createBoard();
+    void generateFloor(int floor);
     public:
         Board(std::string filename = "");
         ~Board();
         void printBoard();
         char getLocation(int row, int col);
-        void modifyLocation(int row, int col, char change);
+        void modifyLocation(int col, int row, int floor, char change);
         void moveFloor();
         int getCurrentFloor();
 };
