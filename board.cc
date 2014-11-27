@@ -8,7 +8,11 @@ using namespace std;
  * Constructor for Board. Default value of filename is ""
  */
 Board::Board(string filename) : file(filename) {
-    map = new string[25];
+    currentFloor = 0;
+    map = new string*[5];
+    for(int floor = 0; floor < 5; floor++) {
+        map[floor] = new string[25];
+    }
     createBoard();
 }
 
@@ -16,6 +20,9 @@ Board::Board(string filename) : file(filename) {
  * Destructor of a Board.
  */
 Board::~Board() {
+    for(int i = 0; i < 5; i++) {
+        delete[] map[i];
+    }
     delete[] map;
 }
 
@@ -29,7 +36,7 @@ void Board::modifyLocation(int row, int col, char change) {
     string newChar;
     iss << change;
     iss >> newChar; 
-    map[row].replace(col, 1, newChar);
+    map[currentFloor][row].replace(col, 1, newChar);
 }
 
 /*
@@ -40,9 +47,11 @@ void Board::createBoard() {
     ifstream *in = (file == "") ? NULL : new ifstream(file.c_str());
     if (in == NULL) return;
     string row;
-    for(int i=0; i < 25; i++) {
-        getline(*in, row);
-        map[i] = row;
+    for(int floor = 0; floor < 5; floor++) {
+        for(int i=0; i < 25; i++) {
+            getline(*in, row);
+            map[floor][i] = row;
+        }
     }
     delete in;
 }
@@ -53,7 +62,7 @@ void Board::createBoard() {
  */
 void Board::printBoard() {
     for(int i = 0; i < 25; i++) {
-        cout << map[i] << endl;
+        cout << map[currentFloor][i] << endl;
     }
 }
 
@@ -63,6 +72,22 @@ void Board::printBoard() {
  * Returns: char at map[row][col]
  */
 char Board::getLocation(int row, int col) {
-    string retRow = map[row];
+    string retRow = map[currentFloor][row];
     return retRow[col];
+}
+
+/*
+ * Purpose: move up a floor
+ * Returns: Nothing
+ */
+void Board::moveFloor() {
+    currentFloor++;
+}
+
+/*
+ * Purpose: Get the current Floor
+ * Returns: integer currentFloor + 1
+ */
+int Board::getCurrentFloor() {
+    return currentFloor + 1;
 }
