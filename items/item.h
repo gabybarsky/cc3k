@@ -4,8 +4,8 @@
 
 class Item {
  protected:
-	string name;
-	virtual Item() = 0;
+    std::string name;
+	Item(std::string name);
 	virtual ~Item() = 0;
 };
 #endif
