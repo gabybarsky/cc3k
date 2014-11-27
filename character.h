@@ -2,7 +2,7 @@
 #define __CHARACTER_H__
 #include <string>
 #include <vector>
-#include "gold.h"
+#include "../items/gold.h"
 
 class Character {
  protected:
