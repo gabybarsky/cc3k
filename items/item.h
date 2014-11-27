@@ -7,5 +7,7 @@ class Item {
     std::string name;
 	Item(std::string name);
 	virtual ~Item() = 0;
+ public:
+    std::string getName();
 };
 #endif
