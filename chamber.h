@@ -18,6 +18,6 @@ class Chamber {
         ~Chamber();
         bool isValidTile(int row, int col);
         void generateChamber();
-        void generatePlayer();
+        void generatePlayer(char race);
 };
 #endif

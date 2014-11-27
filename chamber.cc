@@ -1,5 +1,10 @@
 #include "chamber.h"
 #include "board.h"
+#include "players/shade.h"
+#include "players/drow.h"
+#include "players/goblin.h"
+#include "players/vampire.h"
+#include "players/troll.h"
 #include <cstdlib>
 using namespace std;
 
@@ -95,7 +100,7 @@ bool Chamber::isValidTile(int col, int row) {
     return validTile[col][row];
 }
 
-void Chamber::generatePlayer() {
+void Chamber::generatePlayer(char race) {
     int x = rand() % width;
     int y = rand() % height;
 
@@ -103,7 +108,26 @@ void Chamber::generatePlayer() {
         x = rand() % width;
         y = rand() % height;
     }
-    board->modifyLocation(x + topCol, y + topRow, 0, '@');
+
+    vector<int> pos = vector<int>(x, y);
+    switch(race) {
+        case 's': // shade
+            board->player = new Shade(id, pos);
+            break;
+        case 'd': // drow
+            board->player = new Drow(id, pos);
+            break;
+        case 'v': // vampire
+            board->player = new Vampire(id, pos);
+            break;
+        case 't': // troll
+            board->player = new Troll(id, pos);
+            break;
+        case 'g': // goblin
+            board->player = new Goblin(id, pos);
+            break;
+    }
+
 }
     
 void Chamber::generateChamber() {
