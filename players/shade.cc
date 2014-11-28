@@ -3,7 +3,7 @@
 using namespace std;
 
 Shade::Shade(int chamber, vector<int> pos)
-        : Player(hp, atk, def, chamber, pos, "Shade") {
+        : Player(125, 25, 25, chamber, pos, "Shade") {
 }
 
 Shade::~Shade() {

@@ -3,7 +3,7 @@
 using namespace std;
 
 Vampire::Vampire(int chamber, vector<int> pos)
-         : Player(hp, atk, def, chamber, pos, "Vampire") {
+         : Player(50, 25, 25, chamber, pos, "Vampire") {
 }
 
 Vampire::~Vampire() {

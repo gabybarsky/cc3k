@@ -3,7 +3,7 @@
 using namespace std;
 
 Goblin::Goblin(int chamber, vector<int> pos)
-         : Player(hp, atk, def, chamber, pos, "Goblin") {
+         : Player(110, 15, 20, chamber, pos, "Goblin") {
 }
 
 Goblin::~Goblin() {

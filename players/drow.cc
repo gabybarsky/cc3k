@@ -3,7 +3,7 @@
 using namespace std;
 
 Drow::Drow(int chamber, vector<int> pos)
-         : Player(hp, atk, def, chamber, pos, "Drow") {
+         : Player(150, 25, 15, chamber, pos, "Drow") {
 }
 
 Drow::~Drow() {

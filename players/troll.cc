@@ -3,7 +3,7 @@
 using namespace std;
 
 Troll::Troll(int chamber, vector<int> pos)
-         : Player(hp, atk, def, chamber, pos, "Troll") {
+         : Player(120, 25, 15, chamber, pos, "Troll") {
 }
 
 Troll::~Troll() {

@@ -12,7 +12,7 @@ class Player : public Character {
     std::string race;
     std::string action;
  public:
-	Player(int hp, int atk, int def, int chamber, std::vector<int>pos, std::string race);
+	Player(int hp, int atk, int def, int chamber, std::vector<int> pos, std::string race);
 	virtual ~Player();
     int getFloor();
     int getChamber();
