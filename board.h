@@ -12,6 +12,7 @@ class Board {
 
     void createBoard();
     void generateFloor(int floor);
+    char playerSelect();
     public:
         Player *player;
 

@@ -59,10 +59,25 @@ void Board::createBoard() {
         generateFloor(floor);
     }
 
+    char character = playerSelect();
     srand(time(NULL));
     int temp = rand() % 5;
-    chambers[temp]->generatePlayer('s');
+    chambers[temp]->generatePlayer(character);
     delete in;
+}
+
+char Board::playerSelect() {
+    char character; 
+    cout << "Please select a race for your player: " << endl;
+    cout << "   Drow: 'd', Goblin: 'g', Shade: 's', Troll: 't', Vampire: 'v'" << endl;
+    cin >> character;
+    while (character != 'd' && character != 'g' && character != 's'
+            && character != 't' && character != 'v') {
+        cout << "Invalid Selection. Please try again with one of \
+the above selections (d, g, s, t, v):" << endl;
+        cin >> character;
+    }
+    return character;
 }
 
 void Board::generateFloor(int floor) {
