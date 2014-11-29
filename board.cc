@@ -23,7 +23,11 @@ Board::Board(string filename) : file(filename) {
  * Destructor of a Board.
  */
 Board::~Board() {
+    cleanBoard();
     delete[] map;
+    delete[] chambers;
+    delete[] potions;
+    delete[] enemies;
 }
 
 /*
