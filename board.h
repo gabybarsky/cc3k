@@ -34,12 +34,7 @@ class Board {
     char playerSelect();
     void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos);
     void modifyChamber(std::vector<int> newPos);
-	Enemy* generateHuman();
-	Enemy* generateDwarf();
-	Enemy* generateHalfling();
-	Enemy* generateElf();
-	Enemy* generateMerchant();
-	Enemy* generateOrc();
+	Enemy* generateEnemy(char race);
 	std::vector<int> generateDragonPos(std::vector<int> pos);
 	void generateEnemies();
 	void generatePotions();

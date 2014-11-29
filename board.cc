@@ -246,49 +246,8 @@ void Board::modifyChamber(vector<int> newPos) {
             return;
         }
     }
-    cerr << "ERROR: Unkown Chamber" << endl;
-}
-
-Enemy* Board::generateHuman() {
-    int random = rand() % 5;
-    vector<int> position = chambers[random]->generatePosition();
-    Enemy *e = new Human(true, random, position);
-    return e;
-}
-
-Enemy* Board::generateDwarf() {
-    int random = rand() % 5;
-    vector<int> position = chambers[random]->generatePosition();
-    Enemy *e = new Dwarf(true, random, position);
-    return e;
-}
-
-Enemy* Board::generateHalfling() {
-    int random = rand() % 5;
-    vector<int> position = chambers[random]->generatePosition();
-    Enemy *e = new Halfling(true, random, position);
-    return e;
-}
-
-Enemy* Board::generateElf() {
-    int random = rand() % 5;
-    vector<int> position = chambers[random]->generatePosition();
-    Enemy *e = new Halfling(true, random, position);
-    return e;
-}
-
-Enemy* Board::generateMerchant() {
-    int random = rand() % 5;
-    vector<int> position = chambers[random]->generatePosition();
-    Enemy *e = new Merchant(false, random, position);
-    return e;
-}
-
-Enemy* Board::generateOrc() {
-    int random = rand() % 5;
-    vector<int> position = chambers[random]->generatePosition();
-    Enemy *e = new Orc(true, random, position);
-    return e;
+    // should NEVER arrive at this spot.
+    cerr << "ERROR: [Board::modifyChamber(vector<int>)]: Unkown Chamber" << endl;
 }
 
 vector<int> Board::generateDragonPos(vector<int> pos) {
@@ -304,23 +263,54 @@ vector<int> Board::generateDragonPos(vector<int> pos) {
 	return position;
 }
 
+/*
+ * Purpose: generate the Enemy of type race
+ * Returns: Nothing
+ */
+Enemy *Board::generateEnemy(char race) {
+    int random = rand() % 5;
+    vector<int> position = chambers[random]->generatePosition();
+    Enemy *e;
+    switch race {
+        case 'H':
+            e = new Human(true, random, position); break;
+        case 'W':
+            e = new Dwarf(true, random, position); break;
+        case 'L':
+            e = new Halfling(true, random, position); break;
+        case 'E':
+            e = new Elf(true, random, position); break;
+        case 'M':
+            e = new Merchant(false, random, position); break;
+        case 'O':
+            e = new Ork(true, random, position); break;
+        default:
+            cerr << "ERROR [Board::generateEnemy]: Unknown Enemy" << endl;
+    }
+    return e;
+}
+
 void Board::generateEnemies() {
     for(int i=0; i<20; i++) {
         int random = rand() % 18;
+        char race = '~';
         if(random <= 3)
-            enemies[i] = generateHuman();
+            race = 'H';
         else if(random <= 6)
-            enemies[i] = generateDwarf();
+            race = 'W';
         else if(random <= 11)
-            enemies[i] = generateHalfling();
+            race = 'L';
         else if(random <= 13)
-            enemies[i] = generateElf();
+            race = 'E';
         else if(random <= 15)
-            enemies[i] = generateMerchant();
+            race = 'O';
         else if(random <=17)
-            enemies[i] = generateOrc();
+            race = 'M';
         else
-            cerr<<"I don't know how random works"<<endl;
+            // should NEVER reach this piece
+            cerr<<"ERROR: [Board::generateEnemies()]: Unkown Random selection."<<endl;
+
+        enemies[i] = generateEnemy(race);
         vector<int> pos = enemies[i]->getPosition();
         modifyLocation(pos[0], pos[1], enemies[i]->getSymbol());
         Chamber *ch = chambers[enemies[i]->getChamber()];
