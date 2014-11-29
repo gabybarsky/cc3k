@@ -4,8 +4,7 @@
 
 class Merchant : public Enemy {
  public:
-	Merchant();
-	void setHostile();
+	Merchant(bool hostile, int chamber, std::vector<int> pos);
 	~Merchant();
 };
 #endif

@@ -4,7 +4,7 @@
 
 class Dwarf : public Enemy {
  public:
-	Dwarf();
+	Dwarf(bool hostile, int chamber, std::vector<int> pos);
 	~Dwarf();
 };
 #endif

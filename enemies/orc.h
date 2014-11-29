@@ -4,7 +4,7 @@
 
 class Orc : public Enemy {
  public:
-	Orc();
+	Orc(bool hostile, int chamber, std::vector<int> pos);
 	~Orc();
 };
 #endif

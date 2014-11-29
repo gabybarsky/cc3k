@@ -4,7 +4,7 @@
 
 class Halfling : public Enemy {
  public:
-	Halfling();
+	Halfling(bool hostile, int chamber, std::vector<int> pos);
 	~Halfling();
 };
 #endif
