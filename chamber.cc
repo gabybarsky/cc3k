@@ -23,16 +23,16 @@ Chamber::Chamber(int id, int floor, Board* board) : id(id), floor(floor), board(
             height = 7;
             break;
         case 2:
-            topRow = 3;
-            topCol = 39;
-            width = 37;
-            height = 10;
-            break;
-        case 3:
             topRow = 10;
             topCol = 38;
             width = 12;
             height = 3;
+            break;
+        case 3:
+            topRow = 3;
+            topCol = 39;
+            width = 37;
+            height = 10;
             break;
         case 4:
             topRow = 16;
