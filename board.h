@@ -11,7 +11,10 @@ class Board {
     Chamber **chambers;
 
     void createBoard();
+    void cleanBoard();
+    void createPlayer();
     void generateFloor();
+    void generateChambers();
     char playerSelect();
     void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos);
     void modifyChamber(std::vector<int> newPos);
@@ -24,8 +27,7 @@ class Board {
         char getLocation(int col, int row);
         void modifyLocation(int col, int row, char change);
         void moveFloor();
-        int getCurrentFloor();
-        void makePlayer();
+        void insertPlayer();
         void updatePlayer(std::string direction);
 };
 

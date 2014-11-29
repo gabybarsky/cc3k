@@ -122,7 +122,7 @@ bool Chamber::isWithin(int x, int y) {
     return false;
 }
 
-void Chamber::generatePlayer(char race) {
+vector<int> Chamber::generatePosition() {
     int x = rand() % width;
     int y = rand() % height;
 
@@ -134,6 +134,12 @@ void Chamber::generatePlayer(char race) {
     vector<int> pos;
     pos.push_back(x + topCol);
     pos.push_back(y + topRow);
+    return pos;
+}
+
+void Chamber::generatePlayer(char race) {
+    vector<int> pos = generatePosition();
+
     switch(race) {
         case 's': // shade
             board->player = new Shade(id, pos);
@@ -151,22 +157,13 @@ void Chamber::generatePlayer(char race) {
             board->player = new Goblin(id, pos);
             break;
     }
-    board->makePlayer();
+    board->insertPlayer();
 
 }
 
-}
-
-void Chamber::generateStairs(int floor) {
-    int x = rand() % width;
-    int y = rand() % height;
-
-    while(!isValidTile(x,y)) {
-        x = rand() % width;
-        y = rand() % height;
-    }
-
-    board->modifyLocation(x + topCol, y + topRow, floor, '\\');
+void Chamber::generateStairs() {
+    vector<int> pos = generatePosition();
+    board->modifyLocation(pos[0], pos[1], '\\');
 } 
 
 void Chamber::generateChamber() {

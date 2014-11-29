@@ -14,6 +14,7 @@ Board::Board(string filename) : file(filename) {
     chambers = new Chamber*[5];
     map = new string[25];
     createBoard();
+    createPlayer();
 }
 
 /*
@@ -48,15 +49,21 @@ void Board::createBoard() {
         getline(*in, row);
         map[i] = row;
     }
+    generateChambers();
     delete in;
 }
 
+void Board::createPlayer() {
     char character = playerSelect();
     int temp = rand() % 5;
     chambers[temp]->generatePlayer(character);
     
     generateFloor();
 }
+
+void Board::cleanBoard() {
+    for(int i = 0; i < 5; i++) {
+        delete chambers[i];
     }
 }
 
@@ -121,10 +128,20 @@ char Board::getLocation(int col, int row) {
  * Returns: Nothing
  */
 void Board::moveFloor() {
+    cleanBoard();
+    createBoard();
 
+    int random = rand() % 5;
+    player->upFloor();
+    vector<int> playerPos = chambers[random]->generatePosition();
+    player->setPosition(playerPos);
+    player->setChamber(random);
+
+    generateFloor();
+    insertPlayer();
 }
 
-void Board::makePlayer() {
+void Board::insertPlayer() {
     vector<int> pos = player->getPosition();
     modifyLocation(pos[0], pos[1], player->getSymbol());
 }
@@ -145,6 +162,7 @@ void Board::updatePlayer(string direction) {
         commitMove(moveTile, prevPos, newPos);
 
     } else if (moveTile == '\\') {
+        player->setPrevTile('.');
         moveFloor();
     } else if (moveTile == ' ') {
         player->setPosition(prevPos);

@@ -1,6 +1,6 @@
 #ifndef __CHAMBER_H__
 #define __CHAMBER_H__
-
+#include <vector>
 class Board;
 
 class Chamber {
@@ -19,6 +19,8 @@ class Chamber {
         int getTopRow();
         int getWidth();
         int getHeight();
+        std::vector<int> generatePosition();
+        void generateStairs();
         void generateChamber();
         void generatePlayer(char race);
         bool isWithin(int x, int y);
