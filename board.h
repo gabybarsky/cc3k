@@ -23,6 +23,7 @@ class Board {
     Chamber **chambers;
 	Potion **potions; // array for storage of the potions
 	Gold **goldPiles; // array for storage of the gold
+    int goldLeft;
 	Enemy **enemies; // array for storage of the enemies
 	std::vector<Dragon*> dragons; // vector for storage of dragons
 

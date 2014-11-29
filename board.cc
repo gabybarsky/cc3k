@@ -15,6 +15,7 @@ Board::Board(string filename) : file(filename) {
     map = new string[25];
 	potions = new Potion*[10];
 	goldPiles = new Gold*[10];
+    goldLeft = 10;
 	enemies = new Enemy*[20];
     createBoard();
     createPlayer();
@@ -101,7 +102,7 @@ char Board::playerSelect() {
 void Board::generateChambers() {
     for(int ch = 0; ch < 5; ch++) {
         chambers[ch] = new Chamber(ch, this);
-        chambers[ch]->generateChamber();
+        //chambers[ch]->generateChamber();
     }
 }
 
@@ -129,6 +130,7 @@ void Board::printBoard() {
     cout << "Atk: " << player->getAtk() << endl;
     cout << "Def: " << player->getDef() << endl;
     cout << "Action: " << player->getAction() << endl;
+    cout << "TEMP: GOLD: " << player->getGold() << endl;
 }
 
 /*
@@ -214,6 +216,23 @@ void Board::updatePlayer(string direction) {
     } else if(moveTile == 'P') {
         player->setPosition(prevPos);
         player->addAction(" but there seems to be a Potion there!");
+    } else if(moveTile == 'G') {
+        for(int i = 0; i < goldLeft; i++) {
+            if(goldPiles[i]->getPosition() == newPos) {
+                goldLeft--;
+                int quantity = goldPiles[i]->getQuantity();
+                player->addGold(quantity);
+                delete goldPiles[i];
+                commitMove('.', prevPos, newPos);
+                string action = " and finds " + to_string(quantity) +
+                    ((quantity == 1) ? " piece" : " pieces") + " of gold!";
+                player->addAction(action);
+                
+                Chamber *ch = chambers[player->getChamber()];
+                ch->setValid(prevPos[0] - ch->getTopCol(), prevPos[1] - ch->getTopRow(), true);
+                break;
+            }
+        }
     }
 }
 
@@ -362,6 +381,8 @@ void Board::generateGold() {
 			dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i]));
 			modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
 		}
-		modifyLocation(goldPiles[i]->getPosition()[0], goldPiles[i]->getPosition()[1], 'G');
+		modifyLocation(position[0], position[1], 'G');
+        Chamber *ch = chambers[chamber];
+        ch->setValid(position[0] - ch->getTopCol(), position[1] - ch->getTopRow(), false);
 	}
 }
