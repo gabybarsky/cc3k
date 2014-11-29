@@ -15,6 +15,7 @@ class Chamber {
         Chamber(int id, Board* board);
         ~Chamber();
         bool isValidTile(int col, int row);
+        void setValid(int col, int row, bool valid);
         int getTopCol();
         int getTopRow();
         int getWidth();

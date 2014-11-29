@@ -43,7 +43,7 @@ void Board::modifyLocation(int col, int row, char change) {
  */
 void Board::createBoard() {
     ifstream *in = (file == "") ? new ifstream("grid.txt") 
-                                : new ifstream(file.c_str());
+        : new ifstream(file.c_str());
     string row;
     for(int i=0; i < 25; i++) {
         getline(*in, row);
@@ -57,7 +57,7 @@ void Board::createPlayer() {
     char character = playerSelect();
     int temp = rand() % 5;
     chambers[temp]->generatePlayer(character);
-    
+
     generateFloor();
 }
 
@@ -157,6 +157,11 @@ void Board::updatePlayer(string direction) {
         player->addAction(" and hits his head on a wall!");
     } else if (moveTile == '+') {
         commitMove(moveTile, prevPos, newPos);
+        if (player->getChamber() != -1) {
+            Chamber *ch = chambers[player->getChamber()];
+            ch->setValid(prevPos[0] - ch->getTopCol(), prevPos[1] - ch->getTopRow(), true);
+        }
+        player->setChamber(-1);
 
     } else if (moveTile == '#') {
         commitMove(moveTile, prevPos, newPos);
@@ -172,9 +177,14 @@ void Board::updatePlayer(string direction) {
         if (player->getPrevTile() == '+') {
             modifyChamber(newPos);
         }
-        Chamber *curChamber = chambers[player->getChamber()]; 
-        if(curChamber->isValidTile(newPos[0] - curChamber->getTopCol(),
-                    newPos[1] - curChamber->getTopRow())) {
+        Chamber *ch = chambers[player->getChamber()]; 
+        int topCol = ch->getTopCol();
+        int topRow = ch->getTopRow();
+        if(ch->isValidTile(newPos[0] - topCol, newPos[1] - topRow)) {
+            if(player->getPrevTile() != '+') {
+                ch->setValid(prevPos[0] - topCol, prevPos[1] - topRow, true);
+            }
+            ch->setValid(newPos[0] - topCol, newPos[1] - topRow, false);
             commitMove(moveTile, prevPos, newPos);
         } else {
             player->setPosition(prevPos);

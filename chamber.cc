@@ -113,6 +113,10 @@ bool Chamber::isValidTile(int col, int row) {
     return validTile[col][row];
 }
 
+void Chamber::setValid(int col, int row, bool valid) {
+    validTile[col][row] = valid;
+}
+
 bool Chamber::isWithin(int x, int y) {
     if(x >= topCol && x <= topCol + width) {
         if(y >= topRow && y <= topRow + height) {
@@ -139,6 +143,7 @@ vector<int> Chamber::generatePosition() {
 
 void Chamber::generatePlayer(char race) {
     vector<int> pos = generatePosition();
+    setValid(pos[0] - topCol, pos[1] - topRow, false);
 
     switch(race) {
         case 's': // shade
@@ -163,6 +168,7 @@ void Chamber::generatePlayer(char race) {
 
 void Chamber::generateStairs() {
     vector<int> pos = generatePosition();
+    setValid(pos[0] - topCol, pos[1] - topRow, false);
     board->modifyLocation(pos[0], pos[1], '\\');
 } 
 
