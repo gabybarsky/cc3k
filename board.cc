@@ -8,6 +8,7 @@ using namespace std;
 
 /*
  * Constructor for Board. Default value of filename is ""
+ * Create empty arrays for all necessary objects
  */
 Board::Board(string filename) : file(filename) {
     player = NULL;
@@ -64,6 +65,11 @@ void Board::createBoard() {
     delete in;
 }
 
+/*
+ * Purpose: Create a player character based on user input
+ *          Randomize chamber location of player and then generate the floor
+ * Returns: Nothing
+ */
 void Board::createPlayer() {
     char character = playerSelect();
     int temp = rand() % 5;
@@ -72,6 +78,11 @@ void Board::createPlayer() {
     generateFloor();
 }
 
+/*
+ * Purpose: Clean all object arrays on Board to reuse for new floors
+ *          or to aid destruction of the Board
+ * Returns: Nothing
+ */
 void Board::cleanBoard() {
     for(int i = 0; i < 5; i++) {
         delete chambers[i];
@@ -84,6 +95,10 @@ void Board::cleanBoard() {
     }
 }
 
+/*
+ * Purpose: Get user input on PC race that they would like
+ * Returns: char representing the character race
+ */
 char Board::playerSelect() {
     char character; 
     cout << "Please select a race for your player: " << endl;
@@ -98,6 +113,10 @@ char Board::playerSelect() {
     return character;
 }
 
+/*
+ * Purpose: create the chambers on the currentFloor
+ * Returns: Nothing
+ */
 void Board::generateChambers() {
     for(int ch = 0; ch < 5; ch++) {
         chambers[ch] = new Chamber(ch, this);
@@ -105,6 +124,10 @@ void Board::generateChambers() {
     }
 }
 
+/*
+ * Purpose: generate the stairs on the floor
+ * Returns: Nothing
+ */
 void Board::generateFloor() {
     int random = rand() % 5;
     while(player->getChamber() == random) {
@@ -112,8 +135,10 @@ void Board::generateFloor() {
     }
     chambers[random]->generateStairs();
 }
+
 /*
  * Purpose: print out the map grid
+ *          and stats of player
  * Returns: Nothing
  */
 void Board::printBoard() {
@@ -129,7 +154,6 @@ void Board::printBoard() {
     cout << "Atk: " << player->getAtk() << endl;
     cout << "Def: " << player->getDef() << endl;
     cout << "Action: " << player->getAction() << endl;
-    cout << "TEMP: GOLD: " << player->getGold() << endl;
 }
 
 /*
@@ -142,7 +166,7 @@ char Board::getLocation(int col, int row) {
 }
 
 /*
- * Purpose: move up a floor
+ * Purpose: move up a floor, clean last floor and create a new one
  * Returns: Nothing
  */
 void Board::moveFloor() {
@@ -159,20 +183,38 @@ void Board::moveFloor() {
     insertPlayer();
 }
 
+/*
+ * Purpose: insert a player character into the map
+ * Returns: Nothing
+ */
 void Board::insertPlayer() {
     vector<int> pos = player->getPosition();
     modifyLocation(pos[0], pos[1], player->getSymbol());
 }
 
+/*
+ * Purpose: update a players position in the map. Check for collisions
+ *          and obstacles in way as well as interaction with other objects
+ * Returns: Nothing
+ */
 void Board::updatePlayer(string direction) {
-    vector<int> prevPos = player->getPosition();
-    player->move(direction);
-    vector<int> newPos = player->getPosition();
-    char moveTile = getLocation(newPos[0], newPos[1]);
+    vector<int> prevPos = player->getPosition(); // store previous position for reference
+    player->move(direction); //move the player in the desired direction
+    vector<int> newPos = player->getPosition(); // store new position for reference
+    char moveTile = getLocation(newPos[0], newPos[1]); // get the tile player moves to
 
+    /*
+     * For each movement, check validity of the move.
+     * If its a bad move, return the player to his previous position and
+     * print out the associated action. If its a good move, move the player
+     * and validate the old tile as well as invalidate the new player tile
+     */
+
+    // if collision with a wall
     if(moveTile == '|' || moveTile == '-') {
         player->setPosition(prevPos);
         player->addAction(" and hits his head on a wall!");
+    // if stepping onto a doorway between chambers and tunnels
     } else if (moveTile == '+') {
         commitMove(moveTile, prevPos, newPos);
         if (player->getChamber() != -1) {
@@ -181,20 +223,30 @@ void Board::updatePlayer(string direction) {
         }
         player->setChamber(-1);
 
+    // if walking in a tunnel
     } else if (moveTile == '#') {
         commitMove(moveTile, prevPos, newPos);
 
+    // if interact with stairs
     } else if (moveTile == '\\') {
         player->setPrevTile('.');
         moveFloor();
+
+    // if try to move onto a void spot
     } else if (moveTile == ' ') {
         player->setPosition(prevPos);
         player->addAction(" and almost falls into the void.");
 
+    /*
+     * MOVEMENT WITHIN A CHAMBER
+     */
+    // if blank spot
     } else if(moveTile == '.') {
+        // check if just entering the chamber. if true, set players new chamber
         if (player->getPrevTile() == '+') {
             modifyChamber(newPos);
         }
+        // move player and (in)validate new and old player tiles where necessary
         Chamber *ch = chambers[player->getChamber()]; 
         int topCol = ch->getTopCol();
         int topRow = ch->getTopRow();
@@ -205,19 +257,29 @@ void Board::updatePlayer(string direction) {
             ch->setValid(newPos[0] - topCol, newPos[1] - topRow, false);
             commitMove(moveTile, prevPos, newPos);
         } else {
+            // error case. Should NEVER reach this spot. Ghost invalidation has occured
             player->setPosition(prevPos);
             player->addAction(" OH NO WHATS GOING ON THERES A GHOST!");
         }
+
+    // if attempt to walk into an enemy
     } else if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
             moveTile == 'O' || moveTile == 'M' || moveTile == 'D' || moveTile == 'L') {
         player->setPosition(prevPos);
         player->addAction(" and walks straight into an Enemy! OH NOES!");
+
+    // if attempt to walk into a potion
     } else if(moveTile == 'P') {
         player->setPosition(prevPos);
         player->addAction(" but there seems to be a Potion there!");
+
+    // if walking over a piece of gold, pick it up
     } else if(moveTile == 'G') {
         for(int i = 0; i < 10; i++) {
             if(goldPiles[i]->getPosition() == newPos) {
+                // found gold piece in array. No need to delete the memory allocation
+                // since tile will no longer display 'G' and therefore no duplicate
+                // gold will be grabbed. Deletion can be done in cleanup
                 int quantity = goldPiles[i]->getQuantity();
                 player->addGold(quantity);
                 commitMove('.', prevPos, newPos);
@@ -233,12 +295,22 @@ void Board::updatePlayer(string direction) {
     }
 }
 
+/*
+ * Purpose: commit the movement of the character. Modify map locations of prevPos
+ *          and newPos to desired tiles and set players new previous tile
+ * Returns: Nothing
+ */
 void Board::commitMove(char moveTile, vector<int> prevPos, vector<int> newPos) {
     modifyLocation(prevPos[0], prevPos[1], player->getPrevTile());
     player->setPrevTile(moveTile);
     modifyLocation(newPos[0], newPos[1], player->getSymbol());
 }
 
+/*
+ * Purpose: find the new chamber corresponding to the newPos of the player.
+ *          set players chamber field to the new chamber
+ * Returns: Nothing
+ */
 void Board::modifyChamber(vector<int> newPos) {
     for(int i = 0; i < 5; i++) {
         if(chambers[i]->isWithin(newPos[0], newPos[1])) {
@@ -250,9 +322,16 @@ void Board::modifyChamber(vector<int> newPos) {
     cerr << "ERROR: [Board::modifyChamber(vector<int>)]: Unkown Chamber" << endl;
 }
 
+/*
+ * Purpose: generate the position of a Dragon Enemy relative to
+ *          the pos of a dragon gold hoard.
+ * Returns: vector<int> position of the dragon
+ */
 vector<int> Board::generateDragonPos(vector<int> pos) {
+    // random x and y each between -1 and 1
 	int x = rand() % 2 - 1;
 	int y = rand() % 2 - 1;
+    // make sure x and y are not BOTH 0
 	while(x == 0 && y == 0) {
 		x = rand() % 2 - 1;
 		y = rand() % 2 - 1;
@@ -290,8 +369,20 @@ Enemy *Board::generateEnemy(char race) {
     return e;
 }
 
+/*
+ * Purpose: generate all 20 enemies on the floor
+ * Returns: Nothing
+ */
 void Board::generateEnemies() {
     for(int i=0; i<20; i++) {
+        /* random probabilities of an enemy spawn
+         *      Human:      2/9
+         *      Dwarf:      3/18
+         *      Halfling:   5/18
+         *      Elf:        1/9
+         *      Orc:        1/9
+         *      Merchant:   1/9
+         */
         int random = rand() % 18;
         char race = '~';
         if(random <= 3)
@@ -311,6 +402,7 @@ void Board::generateEnemies() {
             cerr<<"ERROR: [Board::generateEnemies()]: Unkown Random selection."<<endl;
 
         enemies[i] = generateEnemy(race);
+        // add enemy symbol to the map and invalidate its position in the chamber
         vector<int> pos = enemies[i]->getPosition();
         modifyLocation(pos[0], pos[1], enemies[i]->getSymbol());
         Chamber *ch = chambers[enemies[i]->getChamber()];
@@ -318,34 +410,35 @@ void Board::generateEnemies() {
     }
 }
 
+/*
+ * Purpose: generate the 10 potions on the board
+ * Returns: Nothing
+ */
 void Board::generatePotions() {
     for(int i=0; i<10; i++) {
+        // randomize chamber and potion type. All potions have equal probability
         int chamber = rand() % 5;
         int pot = rand() % 6;
         string type = "";
+        // generate random position in chamber
         vector<int> position = chambers[chamber]->generatePosition();
         switch(pot) {
             case 0:
-                type = "RH";
-                break;
+                type = "RH"; break;
             case 1:
-                type = "BA";
-                break;
+                type = "BA"; break;
             case 2:
-                type = "BD";
-                break;
+                type = "BD"; break;
             case 3:
-                type = "PH";
-                break;
+                type = "PH"; break;
             case 4:
-                type = "WA";
-                break;
+                type = "WA"; break;
             case 5:
-                type = "WD";
-                break;
+                type = "WD"; break;
             default:
-                cerr<<"I don't know how random works"<<endl;
+                cerr<<"ERROR: [Board::generatePotions()]: Unknown Random selection."<<endl;
         }
+        // create potion, add symbol to map, and invalidate its position
         potions[i] = new Potion(type, position);
         modifyLocation(potions[i]->getPosition()[0], potions[i]->getPosition()[1], 'P');
         Chamber *ch = chambers[chamber];
@@ -353,21 +446,31 @@ void Board::generatePotions() {
     }
 }
 
+/*
+ * Purpose: generate the 10 hoards of gold on the board
+ * Returns: Nothing
+ */
 void Board::generateGold() {
 	for(int i = 0; i < 10; i++) {
+        /* randomize chamber and hoard amount
+         *      Normal:     5/8
+         *      Dragon:     1/8
+         *      Small:      1/4
+         */
 		int chamber = rand() % 5;
 		int random = rand() % 8;
 		vector<int> position = chambers[chamber]->generatePosition();
-		if(random <= 4)
+		if(random <= 4) // normal hoard
 			goldPiles[i] = new Gold(position, 2);
-		else if(random <= 6)
+		else if(random <= 6) // small hoard
 			goldPiles[i] = new Gold(position, 1);
-		else if(random == 7) {
+		else if(random == 7) { // dragon hoard
 			goldPiles[i] = new Gold(position, 6);
 			vector<int> dragonPosition = generateDragonPos(position);
 			dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i]));
 			modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
 		}
+        // add gold symbol to map, and invalidate its position
 		modifyLocation(position[0], position[1], 'G');
         Chamber *ch = chambers[chamber];
         ch->setValid(position[0] - ch->getTopCol(), position[1] - ch->getTopRow(), false);
