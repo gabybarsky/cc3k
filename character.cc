@@ -4,9 +4,11 @@
 using namespace std;
 
 Character::Character() : atk(0), def(0), hp(0), symbol(0), position() {
+	cout<<"Default constructor"<<endl;
 }
 
 Character::Character(int hp, int atk, int def, char sym, vector<int>&pos) : atk(atk), def(def), hp(hp), symbol(sym), position(pos) {
+	cout<<"5 param constructor"<<endl;
 }
 
 Character::Character(Character &c) {

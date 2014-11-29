@@ -4,11 +4,19 @@
 #include <vector>
 #include "chamber.h"
 #include "players/player.h"
+#include "enemies/enemy.h"
+#include "enemies/dwarf.h"
+#include "enemies/elf.h"
+#include "enemies/halfling.h"
+#include "enemies/human.h"
+#include "enemies/merchant.h"
+#include "enemies/orc.h"
 
 class Board {
     std::string file;
     std::string *map; // array for storage of the map rows
     Chamber **chambers;
+	Enemy **enemies; // array for storage of the enemies
 
     void createBoard();
     void cleanBoard();
@@ -18,6 +26,13 @@ class Board {
     char playerSelect();
     void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos);
     void modifyChamber(std::vector<int> newPos);
+	Enemy* generateHuman();
+	Enemy* generateDwarf();
+	Enemy* generateHalfling();
+	Enemy* generateElf();
+	Enemy* generateMerchant();
+	Enemy* generateOrc();
+	void generateEnemies();
     public:
         Player *player;
 

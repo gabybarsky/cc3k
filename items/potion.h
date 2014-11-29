@@ -1,6 +1,8 @@
 #ifndef __POTION_H__
 #define __POTION_H__
 #include "item.h"
+#include "../character.h"
+#include "../potionDecorator.h"
 
 class Potion : public Item {
 	int value;

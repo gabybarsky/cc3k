@@ -4,7 +4,7 @@
 
 class Gold : public Treasure {
  public:
-	Gold();
+	Gold(int quantity);
 	~Gold();
     int getQuantity();
 };

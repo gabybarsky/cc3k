@@ -13,6 +13,7 @@ Board::Board(string filename) : file(filename) {
     player = NULL;
     chambers = new Chamber*[5];
     map = new string[25];
+	enemies = new Enemy*[20];
     createBoard();
     createPlayer();
 }
@@ -25,7 +26,7 @@ Board::~Board() {
 }
 
 /*
- * Prupose: modify a certain character in the Board.
+ * Purpose: modify a certain character in the Board.
  *          map[row][column] gets changed to the new char change
  * Returns: Nothing
  */
@@ -50,6 +51,7 @@ void Board::createBoard() {
         map[i] = row;
     }
     generateChambers();
+	generateEnemies();
     delete in;
 }
 
@@ -188,7 +190,7 @@ void Board::updatePlayer(string direction) {
             commitMove(moveTile, prevPos, newPos);
         } else {
             player->setPosition(prevPos);
-            if(moveTile == 'H' || moveTile == 'D' || moveTile == 'E' ||
+            if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
                     moveTile == 'O' || moveTile == 'M' || moveTile == 'D') {
                 player->addAction(" and walks straight into an Enemy! OH NOES!");
             } else if(moveTile == 'P') {
@@ -215,3 +217,65 @@ void Board::modifyChamber(vector<int> newPos) {
     cerr << "ERROR: Unkown Chamber" << endl;
 }
 
+Enemy* Board::generateHuman() {
+	int random = rand() % 5;
+	vector<int> position = chambers[random]->generatePosition();
+	Enemy *e = new Human(true, random, position);
+	return e;
+}
+
+Enemy* Board::generateDwarf() {
+	int random = rand() % 5;
+	vector<int> position = chambers[random]->generatePosition();
+	Enemy *e = new Dwarf(true, random, position);
+	return e;
+}
+
+Enemy* Board::generateHalfling() {
+	int random = rand() % 5;
+	vector<int> position = chambers[random]->generatePosition();
+	Enemy *e = new Halfling(true, random, position);
+	return e;
+}
+
+Enemy* Board::generateElf() {
+	int random = rand() % 5;
+	vector<int> position = chambers[random]->generatePosition();
+	Enemy *e = new Halfling(true, random, position);
+	return e;
+}
+
+Enemy* Board::generateMerchant() {
+	int random = rand() % 5;
+	vector<int> position = chambers[random]->generatePosition();
+	Enemy *e = new Merchant(false, random, position);
+	return e;
+}
+
+Enemy* Board::generateOrc() {
+	int random = rand() % 5;
+	vector<int> position = chambers[random]->generatePosition();
+	Enemy *e = new Orc(true, random, position);
+	return e;
+}
+
+void Board::generateEnemies() {
+	for(int i=0; i<20; i++) {
+		int random = rand() % 18;
+		if(random <= 3)
+			enemies[i] = generateHuman();
+		else if(random <= 6)
+			enemies[i] = generateDwarf();
+		else if(random <= 11)
+			enemies[i] = generateHalfling();
+		else if(random <= 13)
+			enemies[i] = generateElf();
+		else if(random <= 15)
+			enemies[i] = generateMerchant();
+		else if(random <=17)
+			enemies[i] = generateOrc();
+		else
+			cerr<<"I don't know how random works"<<endl;
+		modifyLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1], enemies[i]->getSymbol());
+	}
+}

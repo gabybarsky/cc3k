@@ -8,3 +8,6 @@ Item::Item(string name, int quantity = 0) : name(name), quantity(quantity) {
 string Item::getName() {
     return name;
 }
+
+Item::~Item(){
+}

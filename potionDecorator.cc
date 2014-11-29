@@ -25,3 +25,6 @@ int PotionDecorator::getHp() {
 	else
 		return c.getDef();
 }
+
+PotionDecorator::~PotionDecorator() {
+}

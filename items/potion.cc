@@ -26,7 +26,9 @@ Potion::Potion(string type) : Item(type, 1) {
 		value = -5;
 }
 
-Character* use(Character &c) {
-	Character a = new potionDecorator(c, stat, value);
-	return a;
+void Potion::use(Character &c) {
+	PotionDecorator(c, stat, value);
+}
+
+Potion::~Potion() {
 }
