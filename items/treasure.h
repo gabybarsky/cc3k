@@ -6,7 +6,6 @@
 
 class Treasure : public Item {
  protected:
-	int quantity;
 	Treasure(std::string name, std::vector<int> pos, int quantity);
 	~Treasure();
 };
