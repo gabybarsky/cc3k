@@ -1,6 +1,10 @@
 #include "potion.h"
 using namespace std;
 
+/*
+ * Potion constructor, sets stat and value so that the appropriate
+ * PotionDecorator can be created
+ */
 Potion::Potion(string type, vector<int> pos) : Item(type, pos, 1) {
 	switch(type[1]) {
 		case 'H':
@@ -25,9 +29,16 @@ Potion::Potion(string type, vector<int> pos) : Item(type, pos, 1) {
 		value = -5;
 }
 
+/*
+ * Purpose: usees the potion on the character c, creating a PotionDecorator
+ * with parameter c
+ */
 void Potion::use(Character &c) {
 	PotionDecorator(c, stat, value);
 }
 
+/*
+ * Potion destructor
+ */
 Potion::~Potion() {
 }
