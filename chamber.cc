@@ -8,7 +8,7 @@
 #include <cstdlib>
 using namespace std;
 
-Chamber::Chamber(int id, int floor, Board* board) : id(id), floor(floor), board(board) {
+Chamber::Chamber(int id, Board* board) : id(id), board(board) {
     switch(id) {
         case 0:
             topRow = 3;

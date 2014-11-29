@@ -7,12 +7,11 @@
 
 class Board {
     std::string file;
-    std::string **map; // array for storage of the map rows
-    int currentFloor;
+    std::string *map; // array for storage of the map rows
     Chamber **chambers;
 
     void createBoard();
-    void generateFloor(int floor);
+    void generateFloor();
     char playerSelect();
     void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos);
     void modifyChamber(std::vector<int> newPos);
@@ -23,7 +22,7 @@ class Board {
         ~Board();
         void printBoard();
         char getLocation(int col, int row);
-        void modifyLocation(int col, int row, int floor, char change);
+        void modifyLocation(int col, int row, char change);
         void moveFloor();
         int getCurrentFloor();
         void makePlayer();

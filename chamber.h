@@ -5,7 +5,6 @@ class Board;
 
 class Chamber {
     int id;
-    int floor;
     int topRow, topCol;
     int width, height;
     bool **validTile;
@@ -13,7 +12,7 @@ class Chamber {
 
     void assignValids();
     public:
-        Chamber(int id, int floor, Board* board);
+        Chamber(int id, Board* board);
         ~Chamber();
         bool isValidTile(int col, int row);
         int getTopCol();

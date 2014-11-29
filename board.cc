@@ -11,12 +11,8 @@ using namespace std;
  */
 Board::Board(string filename) : file(filename) {
     player = NULL;
-    currentFloor = 0;
     chambers = new Chamber*[5];
-    map = new string*[5];
-    for(int floor = 0; floor < 5; floor++) {
-        map[floor] = new string[25];
-    }
+    map = new string[25];
     createBoard();
 }
 
@@ -24,9 +20,6 @@ Board::Board(string filename) : file(filename) {
  * Destructor of a Board.
  */
 Board::~Board() {
-    for(int i = 0; i < 5; i++) {
-        delete[] map[i];
-    }
     delete[] map;
 }
 
@@ -35,15 +28,15 @@ Board::~Board() {
  *          map[row][column] gets changed to the new char change
  * Returns: Nothing
  */
-void Board::modifyLocation(int col, int row, int floor, char change) {
+void Board::modifyLocation(int col, int row, char change) {
     stringstream iss;
     string newChar;
     iss << change;
     iss >> newChar; 
-    map[floor][row].replace(col, 1, newChar);
+    map[row].replace(col, 1, newChar);
 }
 
-/*
+/* TODO: Does a file indicate all 5 floors? Or just 1
  * Purpose: create a board from a file
  * Returns: Nothing
  */
@@ -51,22 +44,20 @@ void Board::createBoard() {
     ifstream *in = (file == "") ? new ifstream("grid.txt") 
                                 : new ifstream(file.c_str());
     string row;
-    for(int floor = 0; floor < 5; floor++) {
-        for(int i=0; i < 25; i++) {
-            getline(*in, row);
-            map[floor][i] = row;
-        }
-        generateChambers(floor);
+    for(int i=0; i < 25; i++) {
+        getline(*in, row);
+        map[i] = row;
     }
+    delete in;
+}
 
     char character = playerSelect();
     int temp = rand() % 5;
     chambers[temp]->generatePlayer(character);
     
-    for(int floor = 0; floor < 5; floor++) {
-        generateFloor(floor);
+    generateFloor();
+}
     }
-    delete in;
 }
 
 char Board::playerSelect() {
@@ -83,19 +74,19 @@ char Board::playerSelect() {
     return character;
 }
 
-void Board::generateChambers(int floor) {
+void Board::generateChambers() {
     for(int ch = 0; ch < 5; ch++) {
-        chambers[ch] = new Chamber(ch, floor, this);
+        chambers[ch] = new Chamber(ch, this);
         chambers[ch]->generateChamber();
     }
 }
 
-void Board::generateFloor(int floor) {
+void Board::generateFloor() {
     int random = rand() % 5;
     while(player->getChamber() == random) {
         random = rand() % 5;
     }
-    chambers[random]->generateStairs(floor);
+    chambers[random]->generateStairs();
 }
 /*
  * Purpose: print out the map grid
@@ -103,7 +94,7 @@ void Board::generateFloor(int floor) {
  */
 void Board::printBoard() {
     for(int i = 0; i < 25; i++) {
-        cout << map[currentFloor][i] << endl;
+        cout << map[i] << endl;
     }
     cout << left << "Race: " << left << player->getRace();
     cout.width(70 - player->getRace().length() - 1);
@@ -122,8 +113,7 @@ void Board::printBoard() {
  * Returns: char at map[row][col]
  */
 char Board::getLocation(int col, int row) {
-    string retRow = map[currentFloor][row];
-    return retRow[col];
+    return map[row][col];
 }
 
 /*
@@ -131,20 +121,12 @@ char Board::getLocation(int col, int row) {
  * Returns: Nothing
  */
 void Board::moveFloor() {
-    currentFloor++;
-}
 
-/*
- * Purpose: Get the current Floor
- * Returns: integer currentFloor + 1
- */
-int Board::getCurrentFloor() {
-    return currentFloor + 1;
 }
 
 void Board::makePlayer() {
     vector<int> pos = player->getPosition();
-    modifyLocation(pos[0], pos[1], currentFloor, player->getSymbol());
+    modifyLocation(pos[0], pos[1], player->getSymbol());
 }
 
 void Board::updatePlayer(string direction) {
@@ -190,9 +172,9 @@ void Board::updatePlayer(string direction) {
 }
 
 void Board::commitMove(char moveTile, vector<int> prevPos, vector<int> newPos) {
-    modifyLocation(prevPos[0], prevPos[1], currentFloor, player->getPrevTile());
+    modifyLocation(prevPos[0], prevPos[1], player->getPrevTile());
     player->setPrevTile(moveTile);
-    modifyLocation(newPos[0], newPos[1], currentFloor, player->getSymbol());
+    modifyLocation(newPos[0], newPos[1], player->getSymbol());
 }
 
 void Board::modifyChamber(vector<int> newPos) {
