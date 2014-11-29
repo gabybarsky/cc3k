@@ -13,10 +13,13 @@ class Chamber {
 
     void assignValids();
     public:
-        Chamber();
         Chamber(int id, int floor, Board* board);
         ~Chamber();
-        bool isValidTile(int row, int col);
+        bool isValidTile(int col, int row);
+        int getTopCol();
+        int getTopRow();
+        int getWidth();
+        int getHeight();
         void generateChamber();
         void generatePlayer(char race);
 };

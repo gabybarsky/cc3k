@@ -8,11 +8,6 @@
 #include <cstdlib>
 using namespace std;
 
-Chamber::Chamber() {
-    id = -1;
-    floor = -1;
-}
-
 Chamber::Chamber(int id, int floor, Board* board) : id(id), floor(floor), board(board) {
     switch(id) {
         case 0:
@@ -94,6 +89,22 @@ void Chamber::assignValids() {
             }
             break;
     }
+}
+
+int Chamber::getTopCol() {
+    return topCol;
+}
+
+int Chamber::getTopRow() {
+    return topRow;
+}
+
+int Chamber::getWidth() {
+    return width;
+}
+
+int Chamber::getHeight() {
+    return height;
 }
 
 bool Chamber::isValidTile(int col, int row) {
