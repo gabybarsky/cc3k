@@ -26,5 +26,7 @@ class Player : public Character {
     char getPrevTile();
     void setPrevTile(char tile);
     void setPosition(std::vector<int> pos);
+    void addGold(int quantity);
+    int getGold();
 };
 #endif

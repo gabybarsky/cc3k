@@ -54,6 +54,14 @@ void Player::setPosition(vector<int> pos) {
     position = pos;
 }
 
+void Player::addGold(int quantity) {
+    gold += quantity;
+}
+
+int Player::getGold() {
+    return gold;
+}
+
 void Player::move(string direction) {
     if(direction == "no") {
         position[1] -= 1;
