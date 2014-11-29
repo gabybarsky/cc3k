@@ -72,8 +72,8 @@ char Board::playerSelect() {
     cin >> character;
     while (character != 'd' && character != 'g' && character != 's'
             && character != 't' && character != 'v') {
-        cout << "Invalid Selection. Please try again with one of \
-the above selections (d, g, s, t, v):" << endl;
+        cout << "Invalid Selection. Please try again with one of"; 
+        cout << " the above selections (d, g, s, t, v): ";
         cin >> character;
     }
     return character;
