@@ -15,6 +15,7 @@ class Player : public Character {
  public:
 	Player(int hp, int atk, int def, int chamber, std::vector<int> &pos, std::string race);
 	virtual ~Player();
+    void upFloor();
     int getFloor();
     int getChamber();
     void setChamber(int chamber);

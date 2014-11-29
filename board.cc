@@ -56,12 +56,16 @@ void Board::createBoard() {
             getline(*in, row);
             map[floor][i] = row;
         }
-        generateFloor(floor);
+        generateChambers(floor);
     }
 
     char character = playerSelect();
     int temp = rand() % 5;
     chambers[temp]->generatePlayer(character);
+    
+    for(int floor = 0; floor < 5; floor++) {
+        generateFloor(floor);
+    }
     delete in;
 }
 
@@ -79,13 +83,20 @@ char Board::playerSelect() {
     return character;
 }
 
-void Board::generateFloor(int floor) {
+void Board::generateChambers(int floor) {
     for(int ch = 0; ch < 5; ch++) {
         chambers[ch] = new Chamber(ch, floor, this);
         chambers[ch]->generateChamber();
     }
 }
 
+void Board::generateFloor(int floor) {
+    int random = rand() % 5;
+    while(player->getChamber() == random) {
+        random = rand() % 5;
+    }
+    chambers[random]->generateStairs(floor);
+}
 /*
  * Purpose: print out the map grid
  * Returns: Nothing
@@ -151,6 +162,8 @@ void Board::updatePlayer(string direction) {
     } else if (moveTile == '#') {
         commitMove(moveTile, prevPos, newPos);
 
+    } else if (moveTile == '\\') {
+        moveFloor();
     } else if (moveTile == ' ') {
         player->setPosition(prevPos);
         player->addAction(" and almost falls into the void.");

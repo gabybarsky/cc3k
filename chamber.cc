@@ -152,9 +152,21 @@ void Chamber::generatePlayer(char race) {
     board->makePlayer();
 
 }
-    
+
 void Chamber::generateChamber() {
 }
+
+void Chamber::generateStairs(int floor) {
+    int x = rand() % width;
+    int y = rand() % height;
+
+    while(!isValidTile(x,y)) {
+        x = rand() % width;
+        y = rand() % height;
+    }
+
+    board->modifyLocation(x + topCol, y + topRow, floor, '\\');
+} 
 /*
 void Chamber::generateChamber(Board *board) {
 #ifdef DEBUG_CHAMBER_EDGE

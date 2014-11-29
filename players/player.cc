@@ -22,6 +22,10 @@ int Player::getFloor() {
     return floor;
 }
 
+void Player::upFloor() {
+    floor++;
+}
+
 int Player::getChamber() {
     return chamber;
 }
