@@ -8,6 +8,8 @@
 #include <cstdlib>
 using namespace std;
 
+//#define DEBUG_CHAMBER_EDGE
+
 Chamber::Chamber(int id, Board* board) : id(id), board(board) {
     switch(id) {
         case 0:
