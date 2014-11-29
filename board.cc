@@ -283,8 +283,9 @@ void Board::updatePlayer(string direction) {
                 int quantity = goldPiles[i]->getQuantity();
                 player->addGold(quantity);
                 commitMove('.', prevPos, newPos);
-                string action = " and finds " + to_string(quantity) +
-                    ((quantity == 1) ? " piece" : " pieces") + " of gold!";
+				stringstream actionStream;
+				actionStream<<" and finds "<<quantity<<((quantity == 1) ? " piece" : " pieces")<<" of gold!";
+                string action = actionStream.str();
                 player->addAction(action);
                 
                 Chamber *ch = chambers[player->getChamber()];
@@ -350,7 +351,7 @@ Enemy *Board::generateEnemy(char race) {
     int random = rand() % 5;
     vector<int> position = chambers[random]->generatePosition();
     Enemy *e;
-    switch race {
+    switch (race) {
         case 'H':
             e = new Human(true, random, position); break;
         case 'W':
@@ -362,7 +363,7 @@ Enemy *Board::generateEnemy(char race) {
         case 'M':
             e = new Merchant(false, random, position); break;
         case 'O':
-            e = new Ork(true, random, position); break;
+            e = new Orc(true, random, position); break;
         default:
             cerr << "ERROR [Board::generateEnemy]: Unknown Enemy" << endl;
     }
