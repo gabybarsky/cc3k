@@ -5,9 +5,11 @@
 class Item {
  protected:
     std::string name;
-	Item(std::string name);
-	virtual ~Item() = 0;
+	int quantity;
+	Item(std::string name, int quantity);
+	~Item();
  public:
     std::string getName();
+	int getQuantity();
 };
 #endif

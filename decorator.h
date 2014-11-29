@@ -6,6 +6,6 @@ class Decorator : public Character {
  protected:
 	Character &c;
 	Decorator(Character &c);
-	~Decorator(); //The decorator takes ownership of the character
+	~Decorator();//The decorator takes ownership of the character
 };
 #endif

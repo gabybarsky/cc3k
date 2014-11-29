@@ -1,6 +1,6 @@
 #include "gold.h"
 
-Gold::Gold() : Treasure("gold") {
+Gold::Gold(int quantity) : Treasure("gold", quantity) {
 }
 
 Gold::~Gold() {

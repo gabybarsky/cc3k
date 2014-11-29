@@ -1,8 +1,21 @@
 #include "character.h"
 #include <vector>
+#include <iostream>
 using namespace std;
 
+Character::Character() : atk(0), def(0), hp(0), symbol(0), position() {
+}
+
 Character::Character(int hp, int atk, int def, char sym, vector<int>&pos) : atk(atk), def(def), hp(hp), symbol(sym), position(pos) {
+}
+
+Character::Character(Character &c) {
+	cout<<"Copy Constructor"<<endl;
+	hp = c.hp;
+	atk = c.getAtk();
+	def = c.getDef();
+	symbol = c.getSymbol();
+	position = c.getPosition();
 }
 
 Character::~Character() {

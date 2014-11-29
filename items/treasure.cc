@@ -3,5 +3,8 @@
 #include <string>
 using namespace std;
 
-Treasure::Treasure(string name) : Item(name), quantity(0) {
+Treasure::Treasure(string name, int quantity) : Item(name, quantity) {
+}
+
+Treasure::~Treasure() {
 }

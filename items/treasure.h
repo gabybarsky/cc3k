@@ -6,7 +6,7 @@
 class Treasure : public Item {
  protected:
 	int quantity;
-	Treasure(std::string name);
-	virtual ~Treasure() = 0;
+	Treasure(std::string name, int quantity);
+	~Treasure();
 };
 #endif

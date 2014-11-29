@@ -4,10 +4,9 @@
 
 class Potion : public Item {
 	int value;
-	int turns;
-	string stat;
+	std::string stat;
  public:
-	Potion();
+	Potion(std::string type);
 	void use(Character &c);
 	~Potion();
 };
