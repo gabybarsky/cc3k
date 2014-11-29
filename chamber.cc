@@ -63,7 +63,7 @@ void Chamber::assignValids() {
     }
 
     switch(id) {
-        case 2:
+        case 3:
             for(int x = 0; x < 22; x++) {
                 for(int y = 4; y < height; y++) {
                     validTile[x][y] = false;
@@ -153,7 +153,6 @@ void Chamber::generatePlayer(char race) {
 
 }
 
-void Chamber::generateChamber() {
 }
 
 void Chamber::generateStairs(int floor) {
@@ -167,15 +166,15 @@ void Chamber::generateStairs(int floor) {
 
     board->modifyLocation(x + topCol, y + topRow, floor, '\\');
 } 
-/*
-void Chamber::generateChamber(Board *board) {
+
+void Chamber::generateChamber() {
 #ifdef DEBUG_CHAMBER_EDGE
     for(int x = 0; x < width; x++) {
         for(int y = 0; y < height; y++) {
             if(isValidTile(x, y)) {
-                board->modifyLocation(x + topCol, y + topRow, floor, 'a');
+                board->modifyLocation(x + topCol, y + topRow, 'a');
             } 
         }
     }
 #endif
-}*/
+}
