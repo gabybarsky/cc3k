@@ -24,7 +24,12 @@ Board::Board(string filename) : file(filename) {
  * Destructor of a Board.
  */
 Board::~Board() {
+    cleanBoard();
     delete[] map;
+    delete[] chambers;
+    delete[] potions;
+	delete[] goldPiles;
+    delete[] enemies;
 }
 
 /*
@@ -71,12 +76,12 @@ void Board::cleanBoard() {
     for(int i = 0; i < 5; i++) {
         delete chambers[i];
     }
-	for(int i = 0; i < 10; i++) {
-		delete potions[i];
-	}
-	for(int i = 0; i < 20; i++) {
-		delete enemies[i];
-	}
+    for(int i = 0; i < 10; i++) {
+        delete potions[i];
+    }
+    for(int i = 0; i < 20; i++) {
+        delete enemies[i];
+    }
 }
 
 char Board::playerSelect() {
@@ -200,14 +205,15 @@ void Board::updatePlayer(string direction) {
             commitMove(moveTile, prevPos, newPos);
         } else {
             player->setPosition(prevPos);
-            if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
-                    moveTile == 'O' || moveTile == 'M' || moveTile == 'D') {
-                player->addAction(" and walks straight into an Enemy! OH NOES!");
-            } else if(moveTile == 'P') {
-                player->setPosition(prevPos);
-                player->addAction(" but there seems to be a Potion there!");
-            }
+            player->addAction(" OH NO WHATS GOING ON THERES A GHOST!");
         }
+    } else if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
+            moveTile == 'O' || moveTile == 'M' || moveTile == 'D' || moveTile == 'L') {
+        player->setPosition(prevPos);
+        player->addAction(" and walks straight into an Enemy! OH NOES!");
+    } else if(moveTile == 'P') {
+        player->setPosition(prevPos);
+        player->addAction(" but there seems to be a Potion there!");
     }
 }
 
@@ -228,45 +234,45 @@ void Board::modifyChamber(vector<int> newPos) {
 }
 
 Enemy* Board::generateHuman() {
-	int random = rand() % 5;
-	vector<int> position = chambers[random]->generatePosition();
-	Enemy *e = new Human(true, random, position);
-	return e;
+    int random = rand() % 5;
+    vector<int> position = chambers[random]->generatePosition();
+    Enemy *e = new Human(true, random, position);
+    return e;
 }
 
 Enemy* Board::generateDwarf() {
-	int random = rand() % 5;
-	vector<int> position = chambers[random]->generatePosition();
-	Enemy *e = new Dwarf(true, random, position);
-	return e;
+    int random = rand() % 5;
+    vector<int> position = chambers[random]->generatePosition();
+    Enemy *e = new Dwarf(true, random, position);
+    return e;
 }
 
 Enemy* Board::generateHalfling() {
-	int random = rand() % 5;
-	vector<int> position = chambers[random]->generatePosition();
-	Enemy *e = new Halfling(true, random, position);
-	return e;
+    int random = rand() % 5;
+    vector<int> position = chambers[random]->generatePosition();
+    Enemy *e = new Halfling(true, random, position);
+    return e;
 }
 
 Enemy* Board::generateElf() {
-	int random = rand() % 5;
-	vector<int> position = chambers[random]->generatePosition();
-	Enemy *e = new Halfling(true, random, position);
-	return e;
+    int random = rand() % 5;
+    vector<int> position = chambers[random]->generatePosition();
+    Enemy *e = new Halfling(true, random, position);
+    return e;
 }
 
 Enemy* Board::generateMerchant() {
-	int random = rand() % 5;
-	vector<int> position = chambers[random]->generatePosition();
-	Enemy *e = new Merchant(false, random, position);
-	return e;
+    int random = rand() % 5;
+    vector<int> position = chambers[random]->generatePosition();
+    Enemy *e = new Merchant(false, random, position);
+    return e;
 }
 
 Enemy* Board::generateOrc() {
-	int random = rand() % 5;
-	vector<int> position = chambers[random]->generatePosition();
-	Enemy *e = new Orc(true, random, position);
-	return e;
+    int random = rand() % 5;
+    vector<int> position = chambers[random]->generatePosition();
+    Enemy *e = new Orc(true, random, position);
+    return e;
 }
 
 vector<int> Board::generateDragonPos(vector<int> pos) {
@@ -283,57 +289,62 @@ vector<int> Board::generateDragonPos(vector<int> pos) {
 }
 
 void Board::generateEnemies() {
-	for(int i=0; i<20; i++) {
-		int random = rand() % 18;
-		if(random <= 3)
-			enemies[i] = generateHuman();
-		else if(random <= 6)
-			enemies[i] = generateDwarf();
-		else if(random <= 11)
-			enemies[i] = generateHalfling();
-		else if(random <= 13)
-			enemies[i] = generateElf();
-		else if(random <= 15)
-			enemies[i] = generateMerchant();
-		else if(random <=17)
-			enemies[i] = generateOrc();
-		else
-			cerr<<"I don't know how random works"<<endl;
-		modifyLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1], enemies[i]->getSymbol());
-	}
+    for(int i=0; i<20; i++) {
+        int random = rand() % 18;
+        if(random <= 3)
+            enemies[i] = generateHuman();
+        else if(random <= 6)
+            enemies[i] = generateDwarf();
+        else if(random <= 11)
+            enemies[i] = generateHalfling();
+        else if(random <= 13)
+            enemies[i] = generateElf();
+        else if(random <= 15)
+            enemies[i] = generateMerchant();
+        else if(random <=17)
+            enemies[i] = generateOrc();
+        else
+            cerr<<"I don't know how random works"<<endl;
+        vector<int> pos = enemies[i]->getPosition();
+        modifyLocation(pos[0], pos[1], enemies[i]->getSymbol());
+        Chamber *ch = chambers[enemies[i]->getChamber()];
+        ch->setValid(pos[0] - ch->getTopCol(), pos[1] - ch->getTopRow(), false);
+    }
 }
 
 void Board::generatePotions() {
-	for(int i=0; i<10; i++) {
-		int chamber = rand() % 5;
-		int pot = rand() % 6;
-		string type = "";
-		vector<int> position = chambers[chamber]->generatePosition();
-		switch(pot) {
-			case 0:
-				type = "RH";
-				break;
-			case 1:
-				type = "BA";
-				break;
-			case 2:
-				type = "BD";
-				break;
-			case 3:
-				type = "PH";
-				break;
-			case 4:
-				type = "WA";
-				break;
-			case 5:
-				type = "WD";
-				break;
-			default:
-				cerr<<"I don't know how random works"<<endl;
-		}
-		potions[i] = new Potion(type, position);
-		modifyLocation(potions[i]->getPosition()[0], potions[i]->getPosition()[1], 'P');
-	}
+    for(int i=0; i<10; i++) {
+        int chamber = rand() % 5;
+        int pot = rand() % 6;
+        string type = "";
+        vector<int> position = chambers[chamber]->generatePosition();
+        switch(pot) {
+            case 0:
+                type = "RH";
+                break;
+            case 1:
+                type = "BA";
+                break;
+            case 2:
+                type = "BD";
+                break;
+            case 3:
+                type = "PH";
+                break;
+            case 4:
+                type = "WA";
+                break;
+            case 5:
+                type = "WD";
+                break;
+            default:
+                cerr<<"I don't know how random works"<<endl;
+        }
+        potions[i] = new Potion(type, position);
+        modifyLocation(potions[i]->getPosition()[0], potions[i]->getPosition()[1], 'P');
+        Chamber *ch = chambers[chamber];
+        ch->setValid(position[0] - ch->getTopCol(), position[1] - ch->getTopRow(), false);
+    }
 }
 
 void Board::generateGold() {

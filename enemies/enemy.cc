@@ -9,3 +9,7 @@ Enemy::Enemy(int hp, int atk, int def, char symbol, bool hostile,
 
 Enemy::~Enemy() {
 }
+
+int Enemy::getChamber() {
+    return chamber;
+}
