@@ -60,7 +60,6 @@ void Board::createBoard() {
     }
 
     char character = playerSelect();
-    srand(time(NULL));
     int temp = rand() % 5;
     chambers[temp]->generatePlayer(character);
     delete in;

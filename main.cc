@@ -1,6 +1,7 @@
 #include "board.h"
 #include <iostream>
 #include <string>
+#include <cstdlib>
 using namespace std;
 
 void printBeginning() {
@@ -12,6 +13,7 @@ AND CS246. We hope you enjoy." << endl << endl;
 }
 
 int main() {
+    srand(time(NULL));
     printBeginning();
     Board *grid = new Board("grid.txt");
     //grid->modifyLocation(0, 0, 'a');
