@@ -15,6 +15,7 @@ class Board {
     void generateFloor(int floor);
     char playerSelect();
     void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos);
+    void modifyChamber(std::vector<int> newPos);
     public:
         Player *player;
 

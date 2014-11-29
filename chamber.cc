@@ -111,6 +111,15 @@ bool Chamber::isValidTile(int col, int row) {
     return validTile[col][row];
 }
 
+bool Chamber::isWithin(int x, int y) {
+    if(x >= topCol && x <= topCol + width) {
+        if(y >= topRow && y <= topRow + height) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void Chamber::generatePlayer(char race) {
     int x = rand() % width;
     int y = rand() % height;

@@ -22,5 +22,6 @@ class Chamber {
         int getHeight();
         void generateChamber();
         void generatePlayer(char race);
+        bool isWithin(int x, int y);
 };
 #endif

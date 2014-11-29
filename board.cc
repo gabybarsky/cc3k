@@ -156,6 +156,9 @@ void Board::updatePlayer(string direction) {
         player->addAction(" and almost falls into the void.");
 
     } else if(moveTile == '.') {
+        if (player->getPrevTile() == '+') {
+            modifyChamber(newPos);
+        }
         Chamber *curChamber = chambers[player->getChamber()]; 
         if(curChamber->isValidTile(newPos[0] - curChamber->getTopCol(),
                     newPos[1] - curChamber->getTopRow())) {
@@ -177,5 +180,15 @@ void Board::commitMove(char moveTile, vector<int> prevPos, vector<int> newPos) {
     modifyLocation(prevPos[0], prevPos[1], currentFloor, player->getPrevTile());
     player->setPrevTile(moveTile);
     modifyLocation(newPos[0], newPos[1], currentFloor, player->getSymbol());
+}
+
+void Board::modifyChamber(vector<int> newPos) {
+    for(int i = 0; i < 5; i++) {
+        if(chambers[i]->isWithin(newPos[0], newPos[1])) {
+            player->setChamber(i);
+            return;
+        }
+    }
+    cerr << "ERROR: Unkown Chamber" << endl;
 }
 
