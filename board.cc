@@ -202,14 +202,15 @@ void Board::updatePlayer(string direction) {
             commitMove(moveTile, prevPos, newPos);
         } else {
             player->setPosition(prevPos);
-            if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
-                    moveTile == 'O' || moveTile == 'M' || moveTile == 'D') {
-                player->addAction(" and walks straight into an Enemy! OH NOES!");
-            } else if(moveTile == 'P') {
-                player->setPosition(prevPos);
-                player->addAction(" but there seems to be a Potion there!");
-            }
+            player->addAction(" OH NO WHATS GOING ON THERES A GHOST!");
         }
+    } else if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
+            moveTile == 'O' || moveTile == 'M' || moveTile == 'D' || moveTile == 'L') {
+        player->setPosition(prevPos);
+        player->addAction(" and walks straight into an Enemy! OH NOES!");
+    } else if(moveTile == 'P') {
+        player->setPosition(prevPos);
+        player->addAction(" but there seems to be a Potion there!");
     }
 }
 
@@ -325,5 +326,7 @@ void Board::generatePotions() {
         }
         potions[i] = new Potion(type, position);
         modifyLocation(potions[i]->getPosition()[0], potions[i]->getPosition()[1], 'P');
+        Chamber *ch = chambers[chamber];
+        ch->setValid(position[0] - ch->getTopCol(), position[1] - ch->getTopRow(), false);
     }
 }
