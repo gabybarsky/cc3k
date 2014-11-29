@@ -52,32 +52,32 @@ void Player::setPosition(vector<int> pos) {
 
 void Player::move(string direction) {
     if(direction == "no") {
-        position[0]++;
+        position[1] -= 1;
         action = "PC moves North";
     } else if (direction == "so") {
-        position[0]--;
+        position[1] += 1;
         action = "PC moves South";
     } else if (direction == "ea") {
-        position[1]++;
+        position[0] += 1;
         action = "PC moves East";
     } else if (direction == "we") {
-        position[1]--;
+        position[0] -= 1;
         action = "PC moves West";
     } else if (direction == "ne") {
-        position[0]++;
-        position[1]++;
+        position[1] -= 1;
+        position[0] += 1;
         action = "PC moves NorthEast";
     } else if (direction == "nw") {
-        position[0]++;
-        position[1]--;
+        position[1] -= 1;
+        position[0] -= 1;
         action = "PC moves NorthWest";
     } else if (direction == "se") {
-        position[0]--;
-        position[1]++;
+        position[1] += 1;
+        position[0] += 1;
         action = "PC moves SouthEast";
     } else if (direction == "sw") {
-        position[0]--;
-        position[1]--;
+        position[1] += 1;
+        position[0] -= 1;
         action = "PC moves SouthWest";
     } else {
         cerr<<"Invalid direction"<<endl;
