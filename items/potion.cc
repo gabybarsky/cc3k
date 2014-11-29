@@ -1,8 +1,7 @@
 #include "potion.h"
-#include <string>
 using namespace std;
 
-Potion::Potion(string type) : Item(type, 1) {
+Potion::Potion(string type, vector<int> pos) : Item(type, pos, 1) {
 	switch(type[1]) {
 		case 'H':
 			stat = "hp";

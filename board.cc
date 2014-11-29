@@ -13,6 +13,7 @@ Board::Board(string filename) : file(filename) {
     player = NULL;
     chambers = new Chamber*[5];
     map = new string[25];
+	potions = new Potion*[10];
 	enemies = new Enemy*[20];
     createBoard();
     createPlayer();
@@ -51,6 +52,7 @@ void Board::createBoard() {
         map[i] = row;
     }
     generateChambers();
+	generatePotions();
 	generateEnemies();
     delete in;
 }
@@ -67,6 +69,12 @@ void Board::cleanBoard() {
     for(int i = 0; i < 5; i++) {
         delete chambers[i];
     }
+	for(int i = 0; i < 10; i++) {
+		delete potions[i];
+	}
+	for(int i = 0; i < 20; i++) {
+		delete enemies[i];
+	}
 }
 
 char Board::playerSelect() {
@@ -277,5 +285,38 @@ void Board::generateEnemies() {
 		else
 			cerr<<"I don't know how random works"<<endl;
 		modifyLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1], enemies[i]->getSymbol());
+	}
+}
+
+void Board::generatePotions() {
+	for(int i=0; i<10; i++) {
+		int chamber = rand() % 5;
+		int pot = rand() % 6;
+		string type = "";
+		vector<int> position = chambers[chamber]->generatePosition();
+		switch(pot) {
+			case 0:
+				type = "RH";
+				break;
+			case 1:
+				type = "BA";
+				break;
+			case 2:
+				type = "BD";
+				break;
+			case 3:
+				type = "PH";
+				break;
+			case 4:
+				type = "WA";
+				break;
+			case 5:
+				type = "WD";
+				break;
+			default:
+				cerr<<"I don't know how random works"<<endl;
+		}
+		potions[i] = new Potion(type, position);
+		modifyLocation(potions[i]->getPosition()[0], potions[i]->getPosition()[1], 'P');
 	}
 }

@@ -1,10 +1,11 @@
 #ifndef __GOLD_H__
 #define __GOLD_H__
 #include "treasure.h"
+#include <vector>
 
 class Gold : public Treasure {
  public:
-	Gold(int quantity);
+	Gold(std::vector<int> pos, int quantity);
 	~Gold();
     int getQuantity();
 };

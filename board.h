@@ -11,11 +11,14 @@
 #include "enemies/human.h"
 #include "enemies/merchant.h"
 #include "enemies/orc.h"
+#include "items/potion.h"
+#include "items/item.h"
 
 class Board {
     std::string file;
     std::string *map; // array for storage of the map rows
     Chamber **chambers;
+	Potion **potions; // array for storage of the potions
 	Enemy **enemies; // array for storage of the enemies
 
     void createBoard();
@@ -33,6 +36,7 @@ class Board {
 	Enemy* generateMerchant();
 	Enemy* generateOrc();
 	void generateEnemies();
+	void generatePotions();
     public:
         Player *player;
 

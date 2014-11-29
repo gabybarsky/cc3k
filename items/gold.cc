@@ -1,6 +1,7 @@
 #include "gold.h"
+using namespace std;
 
-Gold::Gold(int quantity) : Treasure("gold", quantity) {
+Gold::Gold(vector<int> pos, int quantity) : Treasure("gold", pos, quantity) {
 }
 
 Gold::~Gold() {

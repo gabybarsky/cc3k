@@ -1,9 +1,8 @@
 #include "treasure.h"
 #include "item.h"
-#include <string>
 using namespace std;
 
-Treasure::Treasure(string name, int quantity) : Item(name, quantity) {
+Treasure::Treasure(string name, vector<int> pos, int quantity) : Item(name, pos, quantity) {
 }
 
 Treasure::~Treasure() {
