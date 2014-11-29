@@ -1,7 +1,8 @@
 #include "character.h"
+#include <vector>
 using namespace std;
 
-Character::Character(int hp, int atk, int def, char sym, vector<int>pos) : atk(atk), def(def), hp(hp), symbol(sym), position(pos) {
+Character::Character(int hp, int atk, int def, char sym, vector<int>&pos) : atk(atk), def(def), hp(hp), symbol(sym), position(pos) {
 }
 
 Character::~Character() {
@@ -23,12 +24,8 @@ char Character::getSymbol() {
 	return symbol;
 }
 
-int Character::getRow() {
-	return position[0];
-}
-
-int Character::getCol() {
-	return position[1];
+vector<int> Character::getPosition() {
+    return position;
 }
 
 /*

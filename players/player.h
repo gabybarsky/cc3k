@@ -11,8 +11,9 @@ class Player : public Character {
     int chamber;
     std::string race;
     std::string action;
+    char prevTile;
  public:
-	Player(int hp, int atk, int def, int chamber, std::vector<int> pos, std::string race);
+	Player(int hp, int atk, int def, int chamber, std::vector<int> &pos, std::string race);
 	virtual ~Player();
     int getFloor();
     int getChamber();
@@ -20,5 +21,7 @@ class Player : public Character {
     void move(std::string direction);
     std::string getRace();
     std::string getAction();
+    char getPrevTile();
+    void setPrevTile(char tile);
 };
 #endif

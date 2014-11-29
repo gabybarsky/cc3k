@@ -14,15 +14,14 @@ class Character {
     std::vector<int> position;
 	
  public:
-	Character(int hp, int atk, int def, char sym, std::vector<int>pos);
+	Character(int hp, int atk, int def, char sym, std::vector<int> &pos);
 	//virtual void onTurn() = 0;
 	int getAtk();
 	int getDef();
 	int getHp();
 	char getSymbol();
 	std::string getSpecial();
-	int getRow();
-	int getCol();
+    std::vector<int> getPosition();
 	//virtual void attack() = 0;
 	~Character();
 };

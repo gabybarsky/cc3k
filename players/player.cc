@@ -1,14 +1,13 @@
 #include "player.h"
-#include <string>
 #include <iostream>
+#include <string>
 using namespace std;
 
-Player::Player(int hp, int atk, int def, int chamber, vector<int>pos, string race)
+Player::Player(int hp, int atk, int def, int chamber, vector<int>&pos, string race)
                 : Character(hp, atk, def, '@', pos),
                   gold(0), chamber(chamber), race(race) {
     floor = 0;
     action = "Player character has spawned.";
-    Character(hp, atk, def, '@', pos);
 }
 
 Player::~Player() {
@@ -32,6 +31,14 @@ void Player::setChamber(int chamber) {
 
 string Player::getAction() {
     return action;
+}
+
+char Player::getPrevTile() {
+    return prevTile;
+}
+
+void Player::setPrevTile(char tile) {
+    prevTile = tile;
 }
 
 void Player::move(string direction) {
