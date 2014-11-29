@@ -15,7 +15,6 @@ Board::Board(string filename) : file(filename) {
     map = new string[25];
 	potions = new Potion*[10];
 	goldPiles = new Gold*[10];
-    goldLeft = 10;
 	enemies = new Enemy*[20];
     createBoard();
     createPlayer();
@@ -217,12 +216,10 @@ void Board::updatePlayer(string direction) {
         player->setPosition(prevPos);
         player->addAction(" but there seems to be a Potion there!");
     } else if(moveTile == 'G') {
-        for(int i = 0; i < goldLeft; i++) {
+        for(int i = 0; i < 10; i++) {
             if(goldPiles[i]->getPosition() == newPos) {
-                goldLeft--;
                 int quantity = goldPiles[i]->getQuantity();
                 player->addGold(quantity);
-                delete goldPiles[i];
                 commitMove('.', prevPos, newPos);
                 string action = " and finds " + to_string(quantity) +
                     ((quantity == 1) ? " piece" : " pieces") + " of gold!";
