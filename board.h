@@ -1,6 +1,7 @@
 #ifndef __BOARD_H__
 #define __BOARD_H__
 #include <string>
+#include <vector>
 #include "chamber.h"
 #include "players/player.h"
 
@@ -13,6 +14,7 @@ class Board {
     void createBoard();
     void generateFloor(int floor);
     char playerSelect();
+    void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos);
     public:
         Player *player;
 

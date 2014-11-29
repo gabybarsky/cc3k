@@ -142,19 +142,24 @@ void Board::updatePlayer(string direction) {
     vector<int> newPos = player->getPosition();
     char moveTile = getLocation(newPos[0], newPos[1]);
 
-    Chamber *curChamber = chambers[player->getChamber()]; 
     if(moveTile == '|' || moveTile == '-') {
         player->setPosition(prevPos);
         player->addAction(" and hits his head on a wall!");
     } else if (moveTile == '+') {
+        commitMove(moveTile, prevPos, newPos);
+
     } else if (moveTile == '#') {
+        commitMove(moveTile, prevPos, newPos);
+
     } else if (moveTile == ' ') {
+        player->setPosition(prevPos);
+        player->addAction(" and almost falls into the void.");
+
     } else if(moveTile == '.') {
+        Chamber *curChamber = chambers[player->getChamber()]; 
         if(curChamber->isValidTile(newPos[0] - curChamber->getTopCol(),
                     newPos[1] - curChamber->getTopRow())) {
-            modifyLocation(prevPos[0], prevPos[1], currentFloor, player->getPrevTile());
-            player->setPrevTile(moveTile);
-            modifyLocation(newPos[0], newPos[1], currentFloor, player->getSymbol());
+            commitMove(moveTile, prevPos, newPos);
         } else {
             player->setPosition(prevPos);
             if(moveTile == 'H' || moveTile == 'D' || moveTile == 'E' ||
@@ -167,3 +172,10 @@ void Board::updatePlayer(string direction) {
         }
     }
 }
+
+void Board::commitMove(char moveTile, vector<int> prevPos, vector<int> newPos) {
+    modifyLocation(prevPos[0], prevPos[1], currentFloor, player->getPrevTile());
+    player->setPrevTile(moveTile);
+    modifyLocation(newPos[0], newPos[1], currentFloor, player->getSymbol());
+}
+
