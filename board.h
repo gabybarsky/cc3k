@@ -19,7 +19,7 @@ class Board {
         Board(std::string filename = "");
         ~Board();
         void printBoard();
-        char getLocation(int row, int col);
+        char getLocation(int col, int row);
         void modifyLocation(int col, int row, int floor, char change);
         void moveFloor();
         int getCurrentFloor();

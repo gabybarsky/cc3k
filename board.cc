@@ -110,7 +110,7 @@ void Board::printBoard() {
  *          column of the board
  * Returns: char at map[row][col]
  */
-char Board::getLocation(int row, int col) {
+char Board::getLocation(int col, int row) {
     string retRow = map[currentFloor][row];
     return retRow[col];
 }
