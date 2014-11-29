@@ -120,7 +120,9 @@ void Chamber::generatePlayer(char race) {
         y = rand() % height;
     }
 
-    vector<int> pos = vector<int>(x, y);
+    vector<int> pos;
+    pos.push_back(x + topCol);
+    pos.push_back(y + topRow);
     switch(race) {
         case 's': // shade
             board->player = new Shade(id, pos);
