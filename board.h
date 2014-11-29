@@ -11,15 +11,20 @@
 #include "enemies/human.h"
 #include "enemies/merchant.h"
 #include "enemies/orc.h"
+#include "enemies/dragon.h"
 #include "items/potion.h"
 #include "items/item.h"
+#include "items/treasure.h"
+#include "items/gold.h"
 
 class Board {
     std::string file;
     std::string *map; // array for storage of the map rows
     Chamber **chambers;
 	Potion **potions; // array for storage of the potions
+	Gold **goldPiles; // array for storage of the gold
 	Enemy **enemies; // array for storage of the enemies
+	std::vector<Dragon*> dragons; // vector for storage of dragons
 
     void createBoard();
     void cleanBoard();
@@ -35,8 +40,10 @@ class Board {
 	Enemy* generateElf();
 	Enemy* generateMerchant();
 	Enemy* generateOrc();
+	std::vector<int> generateDragonPos(std::vector<int> pos);
 	void generateEnemies();
 	void generatePotions();
+	void generateGold();
     public:
         Player *player;
 

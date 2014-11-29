@@ -14,6 +14,7 @@ Board::Board(string filename) : file(filename) {
     chambers = new Chamber*[5];
     map = new string[25];
 	potions = new Potion*[10];
+	goldPiles = new Gold*[10];
 	enemies = new Enemy*[20];
     createBoard();
     createPlayer();
@@ -53,6 +54,7 @@ void Board::createBoard() {
     }
     generateChambers();
 	generatePotions();
+	generateGold();
 	generateEnemies();
     delete in;
 }
@@ -267,6 +269,19 @@ Enemy* Board::generateOrc() {
 	return e;
 }
 
+vector<int> Board::generateDragonPos(vector<int> pos) {
+	int x = rand() % 2 - 1;
+	int y = rand() % 2 - 1;
+	while(x == 0 && y == 0) {
+		x = rand() % 2 - 1;
+		y = rand() % 2 - 1;
+	}
+	vector<int> position = pos;
+	position[0] += x;
+	position[1] += y;
+	return position;
+}
+
 void Board::generateEnemies() {
 	for(int i=0; i<20; i++) {
 		int random = rand() % 18;
@@ -318,5 +333,24 @@ void Board::generatePotions() {
 		}
 		potions[i] = new Potion(type, position);
 		modifyLocation(potions[i]->getPosition()[0], potions[i]->getPosition()[1], 'P');
+	}
+}
+
+void Board::generateGold() {
+	for(int i = 0; i < 10; i++) {
+		int chamber = rand() % 5;
+		int random = rand() % 8;
+		vector<int> position = chambers[chamber]->generatePosition();
+		if(random <= 4)
+			goldPiles[i] = new Gold(position, 2);
+		else if(random <= 6)
+			goldPiles[i] = new Gold(position, 1);
+		else if(random == 7) {
+			goldPiles[i] = new Gold(position, 6);
+			vector<int> dragonPosition = generateDragonPos(position);
+			dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i]));
+			modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
+		}
+		modifyLocation(goldPiles[i]->getPosition()[0], goldPiles[i]->getPosition()[1], 'G');
 	}
 }
