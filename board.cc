@@ -130,3 +130,40 @@ void Board::moveFloor() {
 int Board::getCurrentFloor() {
     return currentFloor + 1;
 }
+
+void Board::makePlayer() {
+    vector<int> pos = player->getPosition();
+    modifyLocation(pos[0], pos[1], currentFloor, player->getSymbol());
+}
+
+void Board::updatePlayer(string direction) {
+    vector<int> prevPos = player->getPosition();
+    player->move(direction);
+    vector<int> newPos = player->getPosition();
+    char moveTile = getLocation(newPos[0], newPos[1]);
+
+    Chamber *curChamber = chambers[player->getChamber()]; 
+    if(moveTile == '|' || moveTile == '-') {
+        player->setPosition(prevPos);
+        player->addAction(" and hits his head on a wall!");
+    } else if (moveTile == '+') {
+    } else if (moveTile == '#') {
+    } else if (moveTile == ' ') {
+    } else if(moveTile == '.') {
+        if(curChamber->isValidTile(newPos[0] - curChamber->getTopCol(),
+                    newPos[1] - curChamber->getTopRow())) {
+            modifyLocation(prevPos[0], prevPos[1], currentFloor, player->getPrevTile());
+            player->setPrevTile(moveTile);
+            modifyLocation(newPos[0], newPos[1], currentFloor, player->getSymbol());
+        } else {
+            player->setPosition(prevPos);
+            if(moveTile == 'H' || moveTile == 'D' || moveTile == 'E' ||
+                    moveTile == 'O' || moveTile == 'M' || moveTile == 'D') {
+                player->addAction(" and walks straight into an Enemy! OH NOES!");
+            } else if(moveTile == 'P') {
+                player->setPosition(prevPos);
+                player->addAction(" but there seems to be a Potion there!");
+            }
+        }
+    }
+}

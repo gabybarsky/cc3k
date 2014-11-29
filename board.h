@@ -23,6 +23,8 @@ class Board {
         void modifyLocation(int col, int row, int floor, char change);
         void moveFloor();
         int getCurrentFloor();
+        void makePlayer();
+        void updatePlayer(std::string direction);
 };
 
 #endif

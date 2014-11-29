@@ -23,7 +23,7 @@ int main() {
     string c;
     cin >> c;
     while(!cin.eof()) {
-        grid->player->move(c);
+        grid->updatePlayer(c);
         grid->printBoard();
         cin >> c;
     }

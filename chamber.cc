@@ -140,6 +140,7 @@ void Chamber::generatePlayer(char race) {
             board->player = new Goblin(id, pos);
             break;
     }
+    board->makePlayer();
 
 }
     
