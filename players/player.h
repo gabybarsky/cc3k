@@ -21,7 +21,9 @@ class Player : public Character {
     void move(std::string direction);
     std::string getRace();
     std::string getAction();
+    void addAction(std::string action);
     char getPrevTile();
     void setPrevTile(char tile);
+    void setPosition(std::vector<int> pos);
 };
 #endif

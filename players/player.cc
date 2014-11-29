@@ -7,6 +7,7 @@ Player::Player(int hp, int atk, int def, int chamber, vector<int>&pos, string ra
                 : Character(hp, atk, def, '@', pos),
                   gold(0), chamber(chamber), race(race) {
     floor = 0;
+    prevTile = '.';
     action = "Player character has spawned.";
 }
 
@@ -33,12 +34,20 @@ string Player::getAction() {
     return action;
 }
 
+void Player::addAction(string action) {
+    this->action = this->action + action;
+}
+
 char Player::getPrevTile() {
     return prevTile;
 }
 
 void Player::setPrevTile(char tile) {
     prevTile = tile;
+}
+
+void Player::setPosition(vector<int> pos) {
+    position = pos;
 }
 
 void Player::move(string direction) {
