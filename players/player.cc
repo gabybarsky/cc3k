@@ -190,6 +190,7 @@ void Player::move(string direction) {
 	damage = ceil((100 / (100 + def) * e->getAtk()));
 	int random = rand() % 2;
 	action = actionStream.str();
+	actionStream.str("");
 	if(random == 1) {
 		if(damage >= hp) {
 			actionStream<<"PC has been slain";
@@ -201,5 +202,6 @@ void Player::move(string direction) {
 	else
 		actionStream<<"Enemy "<<e->getRace()<<" missed";
 	action = actionStream.str();
+	actionStream.str("");
 	return 0;
 }

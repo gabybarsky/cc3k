@@ -41,7 +41,6 @@ class Board {
 	void generateGold();
     void validateTile(bool valid, std::vector<int> pos, int chamber);
     void resetGame();
-    void updatePlayer(std::string direction);
     void updateEnemies();
  public:
     Player *player;
@@ -55,6 +54,7 @@ class Board {
     void insertPlayer();
     void updatePlayer(std::string direction);
 	void makeMerchantsHostile();
+	void updateBoard(std::string direction);
 };
 
 #endif

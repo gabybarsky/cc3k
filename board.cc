@@ -304,10 +304,7 @@ void Board::updatePlayer(string direction) {
 						resetGame();
 						return;
 					}
-					else if(result == 0) { //Nobody died
-						break;
-					}
-					else { //Gauranteed that result is 1, enemy died
+					else if(result == 1) { //Enemy died
 						if(enemies[i]->getRace()=="Human") {
 							player->addGold(4);	
 						}
@@ -316,7 +313,9 @@ void Board::updatePlayer(string direction) {
 						}
 						modifyLocation(newPos[0], newPos[1], '.');
 						validateTile(true, newPos, player->getChamber());
-						break;
+					}
+					else {
+						player->setAction("Nobody was slain");
 					}
 				}
 			}
