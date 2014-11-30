@@ -35,6 +35,6 @@ class Player : public Character {
 	void addAtk(int amt);
 	void addDef(int amt);
     void resetStats();
-	int attack(Enemy *e);
+	int attack(Character *e);
 };
 #endif

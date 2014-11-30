@@ -38,3 +38,23 @@ void Enemy::move(vector<int> newPos) {
 void Enemy::setHostile() {
 	hostile = true;
 }
+
+int Enemy::attack(Player *p) {
+    int damage = ceil((100.0 / (100 + p->getDef()) * atk));
+	int random = rand() % 2;
+	stringstream actionStream;
+	if(random == 0) {
+		if(damage >= p->getHp()) {
+			p->addHp(p->getHp() * -1);
+			actionStream<<"PC has been slain";
+			p->setAction(actionStream.str());
+			return 1;
+		}   
+		p->addHp(damage * -1);
+		actionStream<<"Enemy "<<race<<" dealt "<<damage<<" damage to PC";
+	}   
+	else
+		actionStream<<"Enemy "<<getRace()<<" missed";
+	p->setAction(actionStream.str());
+	return 0; 
+}   

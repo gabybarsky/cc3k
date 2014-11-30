@@ -2,8 +2,12 @@
 #define __ENEMY_H__
 #include "../character.h"
 #include "../items/treasure.h"
+#include "../players/player.h"
+#include <sstream>
 #include <string>
 #include <vector>
+
+class Player;
 
 class Enemy : public Character {
  protected:
@@ -17,5 +21,6 @@ class Enemy : public Character {
     int getChamber();
     void move(std::vector<int> newPos);
 	void setHostile();
+	int attack(Player *p);
 };
 #endif

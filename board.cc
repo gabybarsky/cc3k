@@ -223,7 +223,7 @@ void Board::updateBoard(string direction) {
     }
     //TODO: handle attacking before all this
     updatePlayer(direction); //TODO: make this method ONLY move the character
-    updateEnemies();
+   // updateEnemies();
 }
 
 void Board::updateEnemies() {
@@ -290,7 +290,7 @@ void Board::updatePlayer(string direction) {
     // if attack command but no enemy in the direction
     } else if(attack) { 
 		if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
-           moveTile != 'O' && moveTile != 'M' && moveTile != 'D' && moveTile != 'L') {
+           moveTile != 'O' && moveTile != 'M' && moveTile != 'L') {
 			player->setPosition(prevPos);
 			player->setAction("PC tries to attack but there is no Enemy around!");
 		} else {
@@ -299,12 +299,7 @@ void Board::updatePlayer(string direction) {
 					int result = player->attack(enemies[i]);
 					if(enemies[i]->getRace()=="Merchant")
 						makeMerchantsHostile();
-					if(result == -1) { //Player died
-						player->setAction("PC has been slain");
-						resetGame();
-						return;
-					}
-					else if(result == 1) { //Enemy died
+					if(result == 1) { //Enemy died
 						if(enemies[i]->getRace()=="Human") {
 							player->addGold(4);	
 						}
@@ -314,11 +309,19 @@ void Board::updatePlayer(string direction) {
 						modifyLocation(newPos[0], newPos[1], '.');
 						validateTile(true, newPos, player->getChamber());
 					}
-					else {
-						player->setAction("Nobody was slain");
+					else { //The enemy didn't die
+						printBoard();
+						result = enemies[i]->attack(player);
+						if(result == 1) { //Player died
+							printBoard();
+							resetGame();
+							return;
+						}
 					}
 				}
 			}
+			player->setPosition(prevPos);
+			attack = false;
 		}
     // if collision with a wall
     } else if(moveTile == '|' || moveTile == '-') {

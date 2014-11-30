@@ -178,29 +178,19 @@ void Player::move(string direction) {
  * Purpose: Allows the player to attack an enemy
  * Returns: Nothing
  */
- int Player::attack(Enemy *e) {
-	int damage = ceil((100 / (100 + e->getDef())) * atk);
+int Player::attack(Character *e) {
+	double modifier = (100.0 / (100 + e->getDef())) * atk;
+	cerr<<modifier<<endl;
+	int damage = ceil(modifier);
+	cerr<<damage<<endl;
 	stringstream actionStream;
 	if(damage >= e->getHp()) {
 		actionStream<<"Enemy "<<e->getRace()<<" has been slain";
+		action = actionStream.str();
 		return 1;
 	}
 	e->addHp(damage * -1);
-	actionStream<<"PC dealt "<<" damage to Enemy "<<e->getRace();
-	damage = ceil((100 / (100 + def) * e->getAtk()));
-	int random = rand() % 2;
-	action = actionStream.str();
-	actionStream.str("");
-	if(random == 1) {
-		if(damage >= hp) {
-			actionStream<<"PC has been slain";
-			return -1;
-		}
-		addHp(damage * -1);
-		actionStream<<"Enemy "<<e->getRace()<<" dealt "<<damage<<" damage to PC";
-	}
-	else
-		actionStream<<"Enemy "<<e->getRace()<<" missed";
+	actionStream<<"PC dealt "<<damage<<" damage to Enemy "<<e->getRace();
 	action = actionStream.str();
 	actionStream.str("");
 	return 0;
