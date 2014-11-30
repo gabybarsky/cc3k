@@ -254,6 +254,19 @@ bool Board::isValidTile(int chamber, int col, int row) {
 }
 
 /*
+ * Purpose: get the name of the specific potion
+ * Returns: string name
+ */
+string Board::getPotionName(vector<int> position) {
+    for(int i = 0; i < 10; i++) {
+        if(potions[i]->getPosition() == position) {
+            return potions[i]->getName();
+        }
+    }
+    return NULL;
+}
+
+/*
  * Purpose: update the Board
  * Returns: Nothing
  */
@@ -352,6 +365,7 @@ void Board::updatePlayer(string direction) {
                 // Refer to gold pickup for more info
                 player->setAction("PC uses " + potions[i]->getName());
                 potions[i]->use(*player);
+                player->learnPotion(potions[i]->getName());
                 modifyLocation(newPos[0], newPos[1], '.');
                 validateTile(true, newPos, player->getChamber());
             }

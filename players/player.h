@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <map>
 
 class Player : public Character {
  protected:
@@ -17,6 +18,7 @@ class Player : public Character {
     std::string action;
     int defaultAtk;
     int defaultDef;
+    std::map<std::string, bool> potionKnowledge;
  public:
 	Player(int hp, int atk, int def, int chamber, std::vector<int> &pos, std::string race, Board *board);
 	virtual ~Player();
@@ -37,5 +39,7 @@ class Player : public Character {
 	void addDef(int amt);
     void resetStats();
 	int attack(Character *e);
+    void learnPotion(std::string name);
+    bool hasKnowledge(std::string name);
 };
 #endif

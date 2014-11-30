@@ -52,6 +52,7 @@ class Board {
         void validateTile(bool valid, std::vector<int> pos, int chamber);
         void pickupGold(std::vector<int> position);
         void modifyChamber(std::vector<int> newPos);
+        std::string getPotionName(std::vector<int> position);
 };
 
 #endif
