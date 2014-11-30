@@ -23,6 +23,7 @@ class Player : public Character {
     std::string getRace();
     std::string getAction();
     void addAction(std::string action);
+    void setAction(std::string action);
     char getPrevTile();
     void setPrevTile(char tile);
     void setPosition(std::vector<int> pos);

@@ -39,6 +39,7 @@ class Board {
 	void generateEnemies();
 	void generatePotions();
 	void generateGold();
+    void validateTile(bool valid, std::vector<int> pos, int chamber);
     public:
         Player *player;
 

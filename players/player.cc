@@ -78,6 +78,14 @@ void Player::addAction(string action) {
 }
 
 /*
+ * Purpose: Sets text to the action string
+ * Returns: Nothing
+ */
+void Player::setAction(string action) {
+    this->action = action;
+}
+
+/*
  * Purpose: Getter method for prevTile
  * Returns: prevTile
  */

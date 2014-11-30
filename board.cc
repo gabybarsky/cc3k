@@ -218,8 +218,7 @@ void Board::updatePlayer(string direction) {
     } else if (moveTile == '+') {
         commitMove(moveTile, prevPos, newPos);
         if (player->getChamber() != -1) {
-            Chamber *ch = chambers[player->getChamber()];
-            ch->setValid(prevPos[0] - ch->getTopCol(), prevPos[1] - ch->getTopRow(), true);
+            validateTile(true, prevPos, player->getChamber());
         }
         player->setChamber(-1);
 
@@ -248,13 +247,11 @@ void Board::updatePlayer(string direction) {
         }
         // move player and (in)validate new and old player tiles where necessary
         Chamber *ch = chambers[player->getChamber()]; 
-        int topCol = ch->getTopCol();
-        int topRow = ch->getTopRow();
-        if(ch->isValidTile(newPos[0] - topCol, newPos[1] - topRow)) {
+        if(ch->isValidTile(newPos[0] - ch->getTopCol(), newPos[1] - ch->getTopRow())) {
             if(player->getPrevTile() != '+') {
-                ch->setValid(prevPos[0] - topCol, prevPos[1] - topRow, true);
+                validateTile(true, prevPos, player->getChamber());
             }
-            ch->setValid(newPos[0] - topCol, newPos[1] - topRow, false);
+            validateTile(false, newPos, player->getChamber());
             commitMove(moveTile, prevPos, newPos);
         } else {
             // error case. Should NEVER reach this spot. Ghost invalidation has occured
@@ -287,13 +284,20 @@ void Board::updatePlayer(string direction) {
 				actionStream<<" and finds "<<quantity<<((quantity == 1) ? " piece" : " pieces")<<" of gold!";
                 string action = actionStream.str();
                 player->addAction(action);
-                
-                Chamber *ch = chambers[player->getChamber()];
-                ch->setValid(prevPos[0] - ch->getTopCol(), prevPos[1] - ch->getTopRow(), true);
+                validateTile(true, prevPos, player->getChamber());             
                 break;
             }
         }
     }
+}
+
+/*
+ * Purpose: set the chambers tile at pos to bool valid
+ * Returns: Nothing
+ */
+void Board::validateTile(bool valid, vector<int> pos, int chamber) {
+    Chamber *ch = chambers[chamber];
+    ch->setValid(pos[0] - ch->getTopCol(), pos[1] - ch->getTopRow(), valid);
 }
 
 /*
@@ -365,7 +369,9 @@ Enemy *Board::generateEnemy(char race) {
         case 'O':
             e = new Orc(true, random, position); break;
         default:
+            // should never hit this
             cerr << "ERROR [Board::generateEnemy]: Unknown Enemy" << endl;
+            return NULL;
     }
     return e;
 }
