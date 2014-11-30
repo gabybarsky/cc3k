@@ -361,15 +361,19 @@ void Board::modifyChamber(vector<int> newPos) {
 
 /*
  * Purpose: generate the position of a Dragon Enemy relative to
- *          the pos of a dragon gold hoard.
+ *          the pos of a dragon gold hoard in chamber.
  * Returns: vector<int> position of the dragon
  */
-vector<int> Board::generateDragonPos(vector<int> pos) {
+vector<int> Board::generateDragonPos(vector<int> pos, int chamber) {
     // random x and y each between -1 and 1
 	int x = rand() % 2 - 1;
 	int y = rand() % 2 - 1;
-    // make sure x and y are not BOTH 0
-	while(x == 0 && y == 0) {
+    // make sure x and y are not BOTH 0 AND the pos is valid
+    Chamber *ch = chambers[chamber];
+    int col = ch->getTopCol();
+    int row = ch->getTopRow();
+	while((x == 0 && y == 0) || 
+            !(ch->isValidTile(pos[0] + x - col, pos[1] + y - row))) {
 		x = rand() % 2 - 1;
 		y = rand() % 2 - 1;
 	}
@@ -498,20 +502,22 @@ void Board::generateGold() {
          */
 		int chamber = rand() % 5;
 		int random = rand() % 8;
-		vector<int> position = chambers[chamber]->generatePosition();
+        Chamber *ch = chambers[chamber];
+		vector<int> position = ch->generatePosition();
 		if(random <= 4) // normal hoard
 			goldPiles[i] = new Gold(position, 2);
 		else if(random <= 6) // small hoard
 			goldPiles[i] = new Gold(position, 1);
 		else if(random == 7) { // dragon hoard
 			goldPiles[i] = new Gold(position, 6);
-			vector<int> dragonPosition = generateDragonPos(position);
+			vector<int> dragonPosition = generateDragonPos(position, chamber);
 			dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i]));
 			modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
+            ch->setValid(dragonPosition[0] - ch->getTopCol(),
+                         dragonPosition[1] - ch->getTopRow(), false);
 		}
         // add gold symbol to map, and invalidate its position
 		modifyLocation(position[0], position[1], 'G');
-        Chamber *ch = chambers[chamber];
         ch->setValid(position[0] - ch->getTopCol(), position[1] - ch->getTopRow(), false);
 	}
 }
