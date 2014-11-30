@@ -30,11 +30,16 @@ Potion::Potion(string type, vector<int> pos) : Item(type, pos, 1) {
 }
 
 /*
- * Purpose: usees the potion on the character c, creating a PotionDecorator
- * with parameter c
+ * Purpose: uses the potion on the player p
+ * Returns: Nothing
  */
-void Potion::use(Character &c) {
-	PotionDecorator(c, stat, value);
+void Potion::use(Player &p) {
+	if(stat=="hp")
+		p.addHp(value);
+	else if(stat=="atk")
+		p.addAtk(value);
+	else
+		p.addDef(value);
 }
 
 /*

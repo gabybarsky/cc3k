@@ -125,6 +125,21 @@ int Player::getGold() {
     return gold;
 }
 
+void Player::addHp(int amt) {
+	if(hp+amt<=max)
+		hp+=amt;
+}
+
+void Player::addAtk(int amt) {
+	if(hp+amt>=0)
+		atk+=amt;
+}
+
+void Player::addDef(int amt) {
+	if(def+amt>=0)
+		def+=amt;
+}
+
 /*
  * Purpose: Moves the player in the specified direction
  * Returns: Nothing

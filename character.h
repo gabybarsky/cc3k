@@ -9,6 +9,7 @@ class Character {
 	int atk;
 	int def;
 	int hp;
+	int max;
 	char symbol;
 	std::string special;
     std::vector<int> position;

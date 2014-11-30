@@ -29,5 +29,8 @@ class Player : public Character {
     void setPosition(std::vector<int> pos);
     void addGold(int quantity);
     int getGold();
+	void addHp(int amt);
+	void addAtk(int amt);
+	void addDef(int amt);
 };
 #endif
