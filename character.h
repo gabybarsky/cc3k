@@ -15,9 +15,7 @@ class Character {
     std::vector<int> position;
 	
  public:
-	Character();
 	Character(int hp, int atk, int def, char sym, std::vector<int> &pos);
-	Character(Character &c);
 	//virtual void onTurn() = 0;
 	int getAtk();
 	int getDef();
