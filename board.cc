@@ -31,6 +31,9 @@ Board::~Board() {
     delete[] potions;
 	delete[] goldPiles;
     delete[] enemies;
+    if(player != NULL) {
+        delete player;
+    }
 }
 
 /*
@@ -93,6 +96,18 @@ void Board::cleanBoard() {
     for(int i = 0; i < 20; i++) {
         delete enemies[i];
     }
+    for(int i = 0; i < 10; i++) {
+        delete goldPiles[i];
+    }
+}
+
+void Board::resetGame() {
+    cleanBoard();
+    if (player != NULL) {
+        delete player;
+    }
+    createBoard();
+    createPlayer();
 }
 
 /*
@@ -106,6 +121,10 @@ char Board::playerSelect() {
     cin >> character;
     while (character != 'd' && character != 'g' && character != 's'
             && character != 't' && character != 'v') {
+        if (character == 'r') {
+            resetGame();
+            return ' ';
+        }
         cout << "Invalid Selection. Please try again with one of"; 
         cout << " the above selections (d, g, s, t, v): ";
         cin >> character;
@@ -207,6 +226,9 @@ void Board::updatePlayer(string direction) {
     } else if (direction[0] == 'a') {
         attack = true;
         direction.erase(0, 1);
+    } else if (direction == "r") {
+        resetGame();
+        return;
     }
     vector<int> prevPos = player->getPosition(); // store previous position for reference
     player->move(direction); //move the player in the desired direction
