@@ -198,6 +198,15 @@ void Board::insertPlayer() {
  * Returns: Nothing
  */
 void Board::updatePlayer(string direction) {
+    bool usePotion = false;
+    bool attack = false;
+    if (direction[0] == 'u') {
+        usePotion = true;
+        direction.erase(0, 1);
+    } else if (direction[0] == 'a') {
+        attack = true;
+        direction.erase(0, 1);
+    }
     vector<int> prevPos = player->getPosition(); // store previous position for reference
     player->move(direction); //move the player in the desired direction
     vector<int> newPos = player->getPosition(); // store new position for reference
@@ -268,7 +277,21 @@ void Board::updatePlayer(string direction) {
     // if attempt to walk into a potion
     } else if(moveTile == 'P') {
         player->setPosition(prevPos);
-        player->addAction(" but there seems to be a Potion there!");
+        // command to usePotion 'u' was declared
+        if (usePotion) {
+            for(int i = 0; i < 10; i++) {
+                if(potions[i]->getPosition() == newPos) {
+                    // found potion in array. No need to delete the memory allocation.
+                    // Refer to gold pickup for more info
+                    player->setAction("PC uses " + potions[i]->getName());
+                    potions[i]->use(*player);
+                    modifyLocation(newPos[0], newPos[1], '.');
+                    validateTile(true, newPos, player->getChamber());
+                }
+            }
+        } else {
+            player->addAction(" and sees an unknown Potion!");
+        }
 
     // if walking over a piece of gold, pick it up
     } else if(moveTile == 'G') {
