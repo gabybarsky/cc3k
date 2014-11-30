@@ -430,7 +430,7 @@ void Board::modifyChamber(vector<int> newPos) {
  * Purpose: generate the position relative to a given pos
  *          in chamber. if canBeSame is true the new position
  *          can be the same as the given pos
- * Returns: vector<int> position of the dragon
+ * Returns: vector<int> position 
  */
 vector<int> Board::generateNearbyPos(vector<int> pos, int chamber, bool canBeSame) {
     // random x and y each between -1 and 1
