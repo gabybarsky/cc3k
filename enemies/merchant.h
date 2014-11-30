@@ -4,7 +4,7 @@
 
 class Merchant : public Enemy {
  public:
-	Merchant(bool hostile, int chamber, std::vector<int> pos);
+	Merchant(bool hostile, int chamber, std::vector<int> pos, Board *board);
 	~Merchant();
 };
 #endif

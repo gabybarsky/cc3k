@@ -5,7 +5,7 @@
 
 class Shade : public Player {
  public:
-	Shade(int chamber, std::vector<int>pos);
+	Shade(int chamber, std::vector<int>pos, Board *board);
 	~Shade();
 };
 #endif

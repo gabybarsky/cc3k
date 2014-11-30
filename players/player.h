@@ -18,20 +18,21 @@ class Player : public Character {
     int defaultAtk;
     int defaultDef;
  public:
-	Player(int hp, int atk, int def, int chamber, std::vector<int> &pos, std::string race);
+	Player(int hp, int atk, int def, int chamber, std::vector<int> &pos, std::string race, Board *board);
 	virtual ~Player();
-    void upFloor();
+    void upFloor(int chamber);
     int getFloor();
     int getChamber();
     void setChamber(int chamber);
+    bool changePosition(std::string direction);
     void move(std::string direction);
     std::string getAction();
     void addAction(std::string action);
     void setAction(std::string action);
     void setPrevTile(char tile);
-    void setPosition(std::vector<int> pos);
     void addGold(int quantity);
     int getGold();
+    std::string getGoldStr();
 	void addAtk(int amt);
 	void addDef(int amt);
     void resetStats();

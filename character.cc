@@ -4,10 +4,10 @@
 using namespace std;
 
 /*
- * 6 parameter constructor for character
+ * 7 parameter constructor for character
  */
-Character::Character(int hp, int atk, int def, char sym, vector<int> &pos, string race) 
-						: atk(atk), def(def), hp(hp), maxHp(hp), symbol(sym), position(pos), race(race) {
+Character::Character(int hp, int atk, int def, char sym, vector<int> &pos, string race, Board *board) 
+						: atk(atk), def(def), hp(hp), maxHp(hp), symbol(sym), position(pos), race(race), board(board) {
 	prevTile = '.';
 }
 
@@ -58,6 +58,14 @@ vector<int> Character::getPosition() {
 }
 
 /*
+ * Purpose: Setter method for position
+ * Returns: nothing
+ */
+void Character::setPosition(vector<int> pos) {
+    position = pos;
+}
+
+/*
  * Purpose: getter method for prevTile
  * Returns: prevTile
  */
@@ -80,45 +88,13 @@ string Character::getRace() {
 	return race;
 }
 
+/*
+ * Purpose: modify hp of character by amt
+ * Returns: nothing
+ */
 void Character::addHp(int amt) {
 	if(hp + amt <= maxHp)
 		hp += amt;
 	else
 		hp = maxHp;
 }
-
-/*
-void Character::move(string direction) {
-	switch(direction) {
-		case "no":
-			position[0]++;
-			break;
-		case "so":
-			position[0]--;
-			break;
-		case "ea":
-			position[1]++;
-			break;
-		case "we":
-			position[1]--;
-			break;
-		case "ne":
-			position[0]++;
-			position[1]++;
-			break;
-		case "nw":
-			position[0]++;
-			position[1]--;
-			break;
-		case "se":
-			position[0]--;
-			position[1]++;
-			break;
-		case "sw":
-			position[0]--;
-			position[1]--;
-			break;
-		default:
-			cerr<<"Invalid direction"<<endl;
-	}
-}*/

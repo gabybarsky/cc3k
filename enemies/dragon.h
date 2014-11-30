@@ -5,7 +5,7 @@
 class Dragon : public Enemy {
 	Gold* hoard;
  public:
-	Dragon(bool hostile, int chamber, std::vector<int> pos, Gold* hoard);
+	Dragon(bool hostile, int chamber, std::vector<int> pos, Gold* hoard, Board *board);
 	~Dragon();
 };
 #endif

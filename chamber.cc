@@ -1,10 +1,6 @@
 #include "chamber.h"
+#include <iostream>
 #include "board.h"
-#include "players/shade.h"
-#include "players/drow.h"
-#include "players/goblin.h"
-#include "players/vampire.h"
-#include "players/troll.h"
 #include <cstdlib>
 using namespace std;
 
@@ -13,7 +9,7 @@ using namespace std;
 /*
  *Constructor for Chamber
  */
-Chamber::Chamber(int id, Board* board) : id(id), board(board) {
+Chamber::Chamber(int id, Board *board) : id(id), board(board) {
     switch(id) { //Determines which chamber is being constructed in order to intialize its boundaries
         case 0:						//Top left chamber
             topRow = 3;
@@ -140,8 +136,9 @@ int Chamber::getHeight() {
  * Returns: true if the tile specified by col, row is valid, false otherwise
  */
 bool Chamber::isValidTile(int col, int row) {
-    if(col < 0 || col >= width || row < 0 || row >= height)
+    if(col < 0 || col >= width || row < 0 || row >= height) {
         return false;
+    }
     return validTile[col][row];
 }
 
@@ -189,35 +186,6 @@ vector<int> Chamber::generatePosition() {
 }
 
 /*
- * Purpose: Generates the player character in this chamber
- * Returns: Nothing
- */
-void Chamber::generatePlayer(char race) {
-    vector<int> pos = generatePosition();
-    setValid(pos[0] - topCol, pos[1] - topRow, false);
-
-    switch(race) {
-        case 's': // shade
-            board->player = new Shade(id, pos);
-            break;
-        case 'd': // drow
-            board->player = new Drow(id, pos);
-            break;
-        case 'v': // vampire
-            board->player = new Vampire(id, pos);
-            break;
-        case 't': // troll
-            board->player = new Troll(id, pos);
-            break;
-        case 'g': // goblin
-            board->player = new Goblin(id, pos);
-            break;
-    }
-    board->insertPlayer();
-
-}
-
-/*
  * Purpose: Generates the stairs in this chamber
  * Returns: Nothing
  */
@@ -231,7 +199,6 @@ void Chamber::generateStairs() {
  * Purpose: Debugging method
  * Returns: Nothing
  */
-/*
 void Chamber::generateChamber() {
 #ifdef DEBUG_CHAMBER_EDGE
     for(int x = 0; x < width; x++) {
@@ -242,4 +209,4 @@ void Chamber::generateChamber() {
         }
     }
 #endif
-} */
+} 

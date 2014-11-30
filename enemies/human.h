@@ -4,7 +4,7 @@
 
 class Human : public Enemy {
  public:
-	Human(bool hostile, int chamber, std::vector<int> pos);
+	Human(bool hostile, int chamber, std::vector<int> pos, Board *board);
 	~Human();
 };
 #endif

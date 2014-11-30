@@ -14,13 +14,12 @@ class Enemy : public Character {
 	Treasure *drop;
 	bool hostile;
 	int chamber;
-	std::string race;
  public:
-	Enemy(int hp, int atk, int def, char symbol, bool hostile, int chamber, std::vector<int> pos, std::string race);
+	Enemy(int hp, int atk, int def, char symbol, bool hostile, int chamber, std::vector<int> pos, std::string race, Board *board);
 	virtual ~Enemy();
     int getChamber();
-    void move(std::vector<int> newPos);
 	void setHostile();
 	int attack(Player *p);
+    void move(std::string direction = "");
 };
 #endif

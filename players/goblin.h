@@ -5,7 +5,7 @@
 
 class Goblin : public Player {
  public:
-	Goblin(int chamber, std::vector<int> pos);
+	Goblin(int chamber, std::vector<int> pos, Board *board);
 	~Goblin();
 };
 #endif

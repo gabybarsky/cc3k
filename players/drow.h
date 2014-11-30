@@ -5,7 +5,7 @@
 
 class Drow : public Player {
  public:
-	Drow(int chamber, std::vector<int> pos);
+	Drow(int chamber, std::vector<int> pos, Board *board);
 	~Drow();
 };
 #endif

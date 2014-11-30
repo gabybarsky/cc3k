@@ -1,5 +1,17 @@
 #include "board.h"
 #include "chamber.h"
+#include "players/shade.h"
+#include "players/drow.h"
+#include "players/goblin.h"
+#include "players/vampire.h"
+#include "players/troll.h"
+#include "enemies/dwarf.h"
+#include "enemies/elf.h"
+#include "enemies/halfling.h"
+#include "enemies/human.h"
+#include "enemies/merchant.h"
+#include "enemies/orc.h"
+#include "enemies/dragon.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -14,9 +26,9 @@ Board::Board(string filename) : file(filename) {
     player = NULL;
     chambers = new Chamber*[5];
     map = new string[25];
-	potions = new Potion*[10];
-	goldPiles = new Gold*[10];
-	enemies = new Enemy*[20];
+    potions = new Potion*[10];
+    goldPiles = new Gold*[10];
+    enemies = new Enemy*[20];
     createBoard();
     createPlayer();
 }
@@ -29,7 +41,7 @@ Board::~Board() {
     delete[] map;
     delete[] chambers;
     delete[] potions;
-	delete[] goldPiles;
+    delete[] goldPiles;
     delete[] enemies;
     if(player != NULL) {
         delete player;
@@ -62,9 +74,9 @@ void Board::createBoard() {
         map[i] = row;
     }
     generateChambers();
-	generatePotions();
-	generateGold();
-	generateEnemies();
+    generatePotions();
+    generateGold();
+    generateEnemies();
     delete in;
 }
 
@@ -74,10 +86,25 @@ void Board::createBoard() {
  * Returns: Nothing
  */
 void Board::createPlayer() {
-    char character = playerSelect();
-    int temp = rand() % 5;
-    chambers[temp]->generatePlayer(character);
+    char race = playerSelect();
+    int id = rand() % 5;
+    Chamber *ch = chambers[id];
+    vector<int> pos = ch->generatePosition();
+    ch->setValid(pos[0] - ch->getTopCol(), pos[1] - ch->getTopRow(), false);
 
+    switch(race) {
+        case 's': // shade
+            player = new Shade(id, pos, this); break;
+        case 'd': // drow
+            player = new Drow(id, pos, this); break;
+        case 'v': // vampire
+            player = new Vampire(id, pos, this); break;
+        case 't': // troll
+            player = new Troll(id, pos, this); break;
+        case 'g': // goblin
+            player = new Goblin(id, pos, this); break;
+    }
+    insertPlayer();
     generateFloor();
 }
 
@@ -139,7 +166,7 @@ char Board::playerSelect() {
 void Board::generateChambers() {
     for(int ch = 0; ch < 5; ch++) {
         chambers[ch] = new Chamber(ch, this);
-        //chambers[ch]->generateChamber();
+        chambers[ch]->generateChamber();
     }
 }
 
@@ -164,8 +191,9 @@ void Board::printBoard() {
     for(int i = 0; i < 25; i++) {
         cout << map[i] << endl;
     }
-    cout << left << "Race: " << left << player->getRace();
-    cout.width(70 - player->getRace().length() - 1);
+    cout << "Race: " << player->getRace();
+    cout << " Gold: " << player->getGoldStr();
+    cout.width(63 - player->getRace().length() - player->getGoldStr().length() - 1);
     cout << right << "Floor: " << right << player->getFloor() + 1 << endl;
 
     cout << left;
@@ -193,14 +221,18 @@ void Board::moveFloor() {
     createBoard();
 
     int random = rand() % 5;
-    player->upFloor();
-    vector<int> playerPos = chambers[random]->generatePosition();
-    player->setPosition(playerPos);
-    player->setChamber(random);
-    player->resetStats();
+    player->upFloor(random);
 
     generateFloor();
     insertPlayer();
+}
+
+/*
+ * Purpose: Generate position within chamber
+ * Returns: vector position
+ */
+vector<int> Board::generatePosition(int chamber) {
+    return chambers[chamber]->generatePosition();
 }
 
 /*
@@ -210,6 +242,15 @@ void Board::moveFloor() {
 void Board::insertPlayer() {
     vector<int> pos = player->getPosition();
     modifyLocation(pos[0], pos[1], player->getSymbol());
+}
+
+/*
+ * Purpose: check if tile is valid in chamber
+ * Returns: true if it is, false otherwise
+ */
+bool Board::isValidTile(int chamber, int col, int row) {
+    Chamber *ch = chambers[chamber];
+    return ch->isValidTile(col - ch->getTopCol(), row - ch->getTopRow());
 }
 
 /*
@@ -223,38 +264,21 @@ void Board::updateBoard(string direction) {
     }
     //TODO: handle attacking before all this
     updatePlayer(direction); //TODO: make this method ONLY move the character
-   // updateEnemies();
+    updateEnemies();
 }
 
+/*
+ * Purpose: update and move all alive enemies
+ * Returns: nothing
+ */
 void Board::updateEnemies() {
     for(int i=0; i < 20; i++) {
-        Enemy *e = enemies[i];
-        if(e->getHp() > 0) {
-            vector<int> prevPos = e->getPosition();
-            Chamber *ch = chambers[e->getChamber()];
-            bool canMove = false;
-            // check if this enemy has the ability to move. Not blocked in all directions
-            for(int i = -1; i < 1; i++) {
-                for(int j = -1; j < 1; j++) {
-                    if(i == 0 && j == 0) break;
-                    if(ch->isValidTile(prevPos[0] + i - ch->getTopCol(),
-                                       prevPos[1] + j - ch->getTopRow())) {
-                        canMove = true;
-                        break;
-                    }
-                }
-            }
-            
-            if(canMove) {
-                vector<int> newPos = generateNearbyPos(prevPos, e->getChamber(), true);
-                e->move(newPos);
-                validateTile(true, prevPos, e->getChamber());
-                validateTile(false, newPos, e->getChamber());
-                commitMove('.', prevPos, newPos, e); 
-            }
+        if(enemies[i]->getHp() > 0) {
+            enemies[i]->move();
         }
     }
 }
+
 /*
  * Purpose: update a players position in the map. Check for collisions
  *          and obstacles in way as well as interaction with other objects
@@ -271,150 +295,86 @@ void Board::updatePlayer(string direction) {
         direction.erase(0, 1);
     }
     vector<int> prevPos = player->getPosition(); // store previous position for reference
-    player->move(direction); //move the player in the desired direction
-    //TODO: set so invalid move doesnt make everything else move
+    if(usePotion || attack) {
+        player->changePosition(direction);
+    } else {
+        player->move(direction);
+    }
     vector<int> newPos = player->getPosition(); // store new position for reference
     char moveTile = getLocation(newPos[0], newPos[1]); // get the tile player moves to
 
-    /*
-     * For each movement, check validity of the move.
-     * If its a bad move, return the player to his previous position and
-     * print out the associated action. If its a good move, move the player
-     * and validate the old tile as well as invalidate the new player tile
-     */
+    if(usePotion || attack) {
+        player->setPosition(prevPos);
+    }
+
     // if potion command and no potion in the direction
     if(usePotion && moveTile != 'P') {
-        player->setPosition(prevPos);
         player->setAction("PC tries to use Potion but there is no Potion around!");
 
-    // if attack command but no enemy in the direction
+        // if attack command but no enemy in the direction
     } else if(attack) { 
-		if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
-           moveTile != 'O' && moveTile != 'M' && moveTile != 'L') {
-			player->setPosition(prevPos);
-			player->setAction("PC tries to attack but there is no Enemy around!");
-		} else {
-			for(int i = 0; i < 20; i++) {
-				if(enemies[i]->getPosition() == newPos) {
-					int result = player->attack(enemies[i]);
-					if(enemies[i]->getRace()=="Merchant")
-						makeMerchantsHostile();
-					if(result == 1) { //Enemy died
-						if(enemies[i]->getRace()=="Human") {
-							player->addGold(4);	
-						}
-						else if(enemies[i]->getRace()!="Dragon") {
-							player->addGold(rand() % 2 + 1);
-						}
-						modifyLocation(newPos[0], newPos[1], '.');
-						validateTile(true, newPos, player->getChamber());
-					}
-					else { //The enemy didn't die
-						printBoard();
-						result = enemies[i]->attack(player);
-						if(result == 1) { //Player died
-							printBoard();
-							resetGame();
-							return;
-						}
-					}
-				}
-			}
-			player->setPosition(prevPos);
-			attack = false;
-		}
-    // if collision with a wall
-    } else if(moveTile == '|' || moveTile == '-') {
-        player->setPosition(prevPos);
-        player->addAction(" and hits his head on a wall!");
-
-    // if stepping onto a doorway between chambers and tunnels
-    } else if (moveTile == '+') {
-        commitMove(moveTile, prevPos, newPos, player);
-        if (player->getChamber() != -1) {
-            validateTile(true, prevPos, player->getChamber());
-        }
-        player->setChamber(-1);
-
-    // if walking in a tunnel
-    } else if (moveTile == '#') {
-        commitMove(moveTile, prevPos, newPos, player);
-
-    // if interact with stairs
-    } else if (moveTile == '\\') {
-        player->setPrevTile('.');
-        moveFloor();
-
-    // if try to move onto a void spot
-    } else if (moveTile == ' ') {
-        player->setPosition(prevPos);
-        player->addAction(" and almost falls into the void.");
-
-    // if blank spot
-    } else if(moveTile == '.') {
-        // check if just entering the chamber. if true, set players new chamber
-        if (player->getPrevTile() == '+') {
-            modifyChamber(newPos);
-        }
-        // move player and (in)validate new and old player tiles where necessary
-        Chamber *ch = chambers[player->getChamber()]; 
-        if(ch->isValidTile(newPos[0] - ch->getTopCol(), newPos[1] - ch->getTopRow())) {
-            if(player->getPrevTile() != '+') {
-                validateTile(true, prevPos, player->getChamber());
-            }
-            validateTile(false, newPos, player->getChamber());
-            commitMove(moveTile, prevPos, newPos, player);
+        if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
+                moveTile != 'O' && moveTile != 'M' && moveTile != 'L') {
+            player->setAction("PC tries to attack but there is no Enemy around!");
         } else {
-            // error case. Should NEVER reach this spot. Ghost invalidation has occured
-            player->setPosition(prevPos);
-            player->addAction(" OH NO WHATS GOING ON THERES A GHOST!");
-        }
-
-    // if attempt to walk into an enemy
-    } else if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
-            moveTile == 'O' || moveTile == 'M' || moveTile == 'D' || moveTile == 'L') {
-        player->setPosition(prevPos);
-        player->addAction(" and walks straight into an Enemy! OH NOES!");
-
-    // if attempt to walk into a potion
-    } else if(moveTile == 'P') {
-        player->setPosition(prevPos);
-        // command to usePotion 'u' was declared
-        if (usePotion) {
-            for(int i = 0; i < 10; i++) {
-                if(potions[i]->getPosition() == newPos) {
-                    // found potion in array. No need to delete the memory allocation.
-                    // Refer to gold pickup for more info
-                    player->setAction("PC uses " + potions[i]->getName());
-                    potions[i]->use(*player);
-                    modifyLocation(newPos[0], newPos[1], '.');
-                    validateTile(true, newPos, player->getChamber());
+            for(int i = 0; i < 20; i++) {
+                if(enemies[i]->getPosition() == newPos) {
+                    int result = player->attack(enemies[i]);
+                    if(enemies[i]->getRace()=="Merchant")
+                        makeMerchantsHostile();
+                    if(result == 1) { //Enemy died
+                        if(enemies[i]->getRace()=="Human") {
+                            player->addGold(4);	
+                        }
+                        else if(enemies[i]->getRace()!="Dragon") {
+                            player->addGold(rand() % 2 + 1);
+                        }
+                        modifyLocation(newPos[0], newPos[1], '.');
+                        validateTile(true, newPos, player->getChamber());
+                    }
+                    else { //The enemy didn't die
+                        printBoard();
+                        result = enemies[i]->attack(player);
+                        if(result == 1) { //Player died
+                            printBoard();
+                            resetGame();
+                            return;
+                        }
+                    }
                 }
             }
-        } else {
-            player->addAction(" and sees an unknown Potion!");
+            attack = false;
         }
-
-    // if walking over a piece of gold, pick it up
-    } else if(moveTile == 'G') {
+    } else if(moveTile == 'P' && usePotion) {
         for(int i = 0; i < 10; i++) {
-            if(goldPiles[i]->getPosition() == newPos) {
-                // found gold piece in array. No need to delete the memory allocation
-                // since tile will no longer display 'G' and therefore no duplicate
-                // gold will be grabbed. Deletion can be done in cleanup
-                int quantity = goldPiles[i]->getQuantity();
-                player->addGold(quantity);
-                commitMove('.', prevPos, newPos, player);
-				stringstream actionStream;
-				actionStream<<" and finds "<<quantity<<((quantity == 1) ? " piece" : " pieces")<<" of gold!";
-                string action = actionStream.str();
-                player->addAction(action);
-                validateTile(true, prevPos, player->getChamber());             
-                break;
+            if(potions[i]->getPosition() == newPos) {
+                // found potion in array. No need to delete the memory allocation.
+                // Refer to gold pickup for more info
+                player->setAction("PC uses " + potions[i]->getName());
+                potions[i]->use(*player);
+                modifyLocation(newPos[0], newPos[1], '.');
+                validateTile(true, newPos, player->getChamber());
             }
         }
     }
 }
+
+void Board::pickupGold(vector<int> position) {
+    for(int i = 0; i < 10; i++) {
+        if(goldPiles[i]->getPosition() == position) {
+            // found gold piece in array. No need to delete the memory allocation
+            // since tile will no longer display 'G' and therefore no duplicate
+            // gold will be grabbed. Deletion can be done in cleanup
+            int quantity = goldPiles[i]->getQuantity();
+            player->addGold(quantity);
+            stringstream actionStream;
+            actionStream << " and finds " << quantity << ((quantity == 1) ? " piece" : " pieces") << " of gold!";
+            player->addAction(actionStream.str());
+            break;
+        }
+    }
+}
+
 
 /*
  * Purpose: set the chambers tile at pos to bool valid
@@ -460,21 +420,21 @@ void Board::modifyChamber(vector<int> newPos) {
  */
 vector<int> Board::generateNearbyPos(vector<int> pos, int chamber, bool canBeSame) {
     // random x and y each between -1 and 1
-	int x = rand() % 3 - 1;
-	int y = rand() % 3 - 1;
+    int x = rand() % 3 - 1;
+    int y = rand() % 3 - 1;
     // make sure x and y are not BOTH 0 AND the pos is valid
     Chamber *ch = chambers[chamber];
     int col = ch->getTopCol();
     int row = ch->getTopRow();
-	while((!canBeSame && x == 0 && y == 0) || 
+    while((!canBeSame && x == 0 && y == 0) || 
             !(ch->isValidTile(pos[0] + x - col, pos[1] + y - row))) {
-		x = rand() % 3 - 1;
-		y = rand() % 3 - 1;
-	}
-	vector<int> position = pos;
-	position[0] += x;
-	position[1] += y;
-	return position;
+        x = rand() % 3 - 1;
+        y = rand() % 3 - 1;
+    }
+    vector<int> position = pos;
+    position[0] += x;
+    position[1] += y;
+    return position;
 }
 
 /*
@@ -487,17 +447,17 @@ Enemy *Board::generateEnemy(char race) {
     Enemy *e;
     switch (race) {
         case 'H':
-            e = new Human(true, random, position); break;
+            e = new Human(true, random, position, this); break;
         case 'W':
-            e = new Dwarf(true, random, position); break;
+            e = new Dwarf(true, random, position, this); break;
         case 'L':
-            e = new Halfling(true, random, position); break;
+            e = new Halfling(true, random, position, this); break;
         case 'E':
-            e = new Elf(true, random, position); break;
+            e = new Elf(true, random, position, this); break;
         case 'M':
-            e = new Merchant(false, random, position); break;
+            e = new Merchant(false, random, position, this); break;
         case 'O':
-            e = new Orc(true, random, position); break;
+            e = new Orc(true, random, position, this); break;
         default:
             // should never hit this
             cerr << "ERROR [Board::generateEnemy]: Unknown Enemy" << endl;
@@ -588,38 +548,38 @@ void Board::generatePotions() {
  * Returns: Nothing
  */
 void Board::generateGold() {
-	for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 10; i++) {
         /* randomize chamber and hoard amount
          *      Normal:     5/8
          *      Dragon:     1/8
          *      Small:      1/4
          */
-		int chamber = rand() % 5;
-		int random = rand() % 8;
+        int chamber = rand() % 5;
+        int random = rand() % 8;
         Chamber *ch = chambers[chamber];
-		vector<int> position = ch->generatePosition();
-		if(random <= 4) // normal hoard
-			goldPiles[i] = new Gold(position, 2);
-		else if(random <= 6) // small hoard
-			goldPiles[i] = new Gold(position, 1);
-		else if(random == 7) { // dragon hoard
-			goldPiles[i] = new Gold(position, 6);
-			vector<int> dragonPosition = generateNearbyPos(position, chamber, false);
-			dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i]));
-			modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
+        vector<int> position = ch->generatePosition();
+        if(random <= 4) // normal hoard
+            goldPiles[i] = new Gold(position, 2);
+        else if(random <= 6) // small hoard
+            goldPiles[i] = new Gold(position, 1);
+        else if(random == 7) { // dragon hoard
+            goldPiles[i] = new Gold(position, 6);
+            vector<int> dragonPosition = generateNearbyPos(position, chamber, false);
+            dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i], this));
+            modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
             ch->setValid(dragonPosition[0] - ch->getTopCol(),
-                         dragonPosition[1] - ch->getTopRow(), false);
-		}
+                    dragonPosition[1] - ch->getTopRow(), false);
+        }
         // add gold symbol to map, and invalidate its position
-		modifyLocation(position[0], position[1], 'G');
+        modifyLocation(position[0], position[1], 'G');
         ch->setValid(position[0] - ch->getTopCol(), position[1] - ch->getTopRow(), false);
-	}
+    }
 }
 
 void Board::makeMerchantsHostile() {
-	for(int i = 0; i < 20; i++) {
-		if(enemies[i]->getRace() == "Merchant") {
-			enemies[i]->setHostile();
-		}
-	}
+    for(int i = 0; i < 20; i++) {
+        if(enemies[i]->getRace() == "Merchant") {
+            enemies[i]->setHostile();
+        }
+    }
 }

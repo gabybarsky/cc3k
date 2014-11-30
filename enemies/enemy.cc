@@ -1,12 +1,14 @@
 #include "enemy.h"
+#include <iostream>
+#include "../board.h"
 using namespace std;
 
 /*
  * Enemy constructor, called by all subclasses, calls Character's constructor
  */
 Enemy::Enemy(int hp, int atk, int def, char symbol, bool hostile, 
-			 int chamber, std::vector<int> pos, std::string race) 
-				: Character(hp, atk, def, symbol, pos, race), hostile(hostile), 
+			 int chamber, std::vector<int> pos, std::string race, Board *board) 
+				: Character(hp, atk, def, symbol, pos, race, board), hostile(hostile), 
 							chamber(chamber) {		
 }
 
@@ -25,12 +27,17 @@ int Enemy::getChamber() {
 }
 
 /*
- * Purpose: move enemy to newPos
+ * Purpose: move enemy
  * Returns: nothing
  */
-void Enemy::move(vector<int> newPos) {
-    position = newPos;
+void Enemy::move(string direction) {
+    vector<int> prevPos = position;
+    board->validateTile(true, prevPos, chamber);
+    position = board->generateNearbyPos(position, chamber, true);
+    board->validateTile(false, position, chamber);
+    board->commitMove('.', prevPos, position, this);
 }
+
 /*
  * Purpose: Makes an enemy hostile
  * Returns: Nothing

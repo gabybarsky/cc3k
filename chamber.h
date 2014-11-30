@@ -1,6 +1,7 @@
 #ifndef __CHAMBER_H__
 #define __CHAMBER_H__
 #include <vector>
+
 class Board;
 
 class Chamber {
@@ -12,7 +13,7 @@ class Chamber {
 
     void assignValids();
     public:
-        Chamber(int id, Board* board);
+        Chamber(int id, Board *board);
         ~Chamber();
         bool isValidTile(int col, int row);
         void setValid(int col, int row, bool valid);

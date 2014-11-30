@@ -1,11 +1,15 @@
 #include "player.h"
+#include "../board.h"
+#include <iostream>
+#include <sstream>
+#include <string>
 using namespace std;
 
 /*
  * Player constructor, initializes the floor, previous tile, and action
  */
-Player::Player(int hp, int atk, int def, int chamber, vector<int>&pos, string race)
-                : Character(hp, atk, def, '@', pos, race),
+Player::Player(int hp, int atk, int def, int chamber, vector<int>&pos, string race, Board *board)
+                : Character(hp, atk, def, '@', pos, race, board),
                   gold(0), chamber(chamber) {
     floor = 0;
     prevTile = '.';
@@ -32,8 +36,11 @@ int Player::getFloor() {
  * Purpose: Allows the player to move to the next floor
  * Returns: Nothing
  */
-void Player::upFloor() {
+void Player::upFloor(int chamber) {
     floor++;
+    this->chamber = chamber;
+    this->position = board->generatePosition(chamber);
+    resetStats();
 }
 
 /*
@@ -86,14 +93,6 @@ void Player::setPrevTile(char tile) {
 }
 
 /*
- * Purpose: Setter method for position
- * Returns: Nothing
- */
-void Player::setPosition(vector<int> pos) {
-    position = pos;
-}
-
-/*
  * Purpose: Adds gold to the player's stash
  * Returns: Nothing
  */
@@ -107,6 +106,18 @@ void Player::addGold(int quantity) {
  */
 int Player::getGold() {
     return gold;
+}
+
+/*
+ * Purpose: gold string
+ * Returns: string of # of gold
+ */
+string Player::getGoldStr() {
+    stringstream ss;
+    ss << gold;
+    string goldStr;
+    ss >> goldStr;
+    return goldStr;
 }
 
 /*
@@ -140,7 +151,7 @@ void Player::resetStats() {
  * Purpose: Moves the player in the specified direction
  * Returns: Nothing
  */
-void Player::move(string direction) {
+bool Player::changePosition(string direction) {
     if(direction == "no") {
         position[1] -= 1;
         action = "PC moves North";
@@ -171,8 +182,85 @@ void Player::move(string direction) {
         action = "PC moves SouthWest";
     } else {
         cerr<<"Invalid direction"<<endl;
+        return false;
     }
+    return true;
 }
+
+/*
+ * Purpose: move the player
+ * Returns: nothing
+ */
+void Player::move(string direction) {
+    vector<int> prevPos = position; // store previous position for reference
+    changePosition(direction);
+    char moveTile = board->getLocation(position[0], position[1]);
+
+    /*  
+     * For each movement, check validity of the move.
+     * If its a bad move, return the player to his previous position and
+     * print out the associated action. If its a good move, move the player
+     * and validate the old tile as well as invalidate the new player tile
+     */
+    // if collision with a wall
+    if (moveTile == '|' || moveTile == '-') {
+        setPosition(prevPos);
+        addAction(" and hits his head on a wall!");
+
+    // if stepping on doorway between chambers and tunnels
+    } else if (moveTile == '+') {
+        board->commitMove(moveTile, prevPos, position, this);
+        if(chamber != -1) {
+            board->validateTile(true, prevPos, chamber);
+        }
+        chamber = -1;
+    
+    // if walking in a tunnel
+    } else if (moveTile == '#') {
+        board->commitMove(moveTile, prevPos, position, this);
+    
+    // if interact with stairs
+    } else if (moveTile == '\\') {
+        prevTile = '.';
+        board->moveFloor();
+
+    // if blank spot in chamber
+    } else if (moveTile == '.') {
+        // check if just entering chamber, if true set players new chamber
+        if(prevTile == '+') {
+            board->modifyChamber(position);
+        }
+        // move player and (in)validate new and old player tiles where necessary
+        if(board->isValidTile(chamber, position[0], position[1])) {
+            if(prevTile != '+') {
+                board->validateTile(true, prevPos, chamber);
+            }
+            board->validateTile(false, position, chamber);
+            board->commitMove(moveTile, prevPos, position, this);
+        } else {
+            // error case. Should NEVER reach this spot. Ghost invalidation occured
+            setPosition(prevPos);
+            addAction(" OH NO WHATS GOING ON THERES A GHOST!");
+        }
+
+    // if attempt to walk into an enemy
+    } else if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
+            moveTile == 'O' || moveTile == 'M' || moveTile == 'D' || moveTile == 'L') {
+        setPosition(prevPos);
+        addAction(" and walks straight into an Enemy! OH NOES!");
+
+    // if attempt to walk into a potion
+    } else if(moveTile == 'P') {
+        setPosition(prevPos);
+        addAction(" and sees an unknown Potion!");
+
+    // if walking over Gold pick it up
+    } else if(moveTile == 'G') {
+        board->pickupGold(position);
+        board->commitMove('.', prevPos, position, this);
+        board->validateTile(true, prevPos, chamber);
+    }
+} 
 
 /*
  * Purpose: Allows the player to attack an enemy
@@ -195,3 +283,4 @@ int Player::attack(Character *e) {
 	actionStream.str("");
 	return 0;
 }
+

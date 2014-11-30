@@ -5,7 +5,7 @@
 
 class Troll : public Player {
  public:
-	Troll(int chamber, std::vector<int> pos);
+	Troll(int chamber, std::vector<int> pos, Board *board);
 	~Troll();
 };
 #endif

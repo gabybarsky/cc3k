@@ -5,8 +5,8 @@ using namespace std;
 /*
  * Vampire constructor
  */
-Vampire::Vampire(int chamber, vector<int> pos)
-         : Player(50, 25, 25, chamber, pos, "Vampire") {
+Vampire::Vampire(int chamber, vector<int> pos, Board *board)
+         : Player(50, 25, 25, chamber, pos, "Vampire", board) {
 }
 
 /*
