@@ -382,22 +382,23 @@ void Board::modifyChamber(vector<int> newPos) {
 }
 
 /*
- * Purpose: generate the position of a Dragon Enemy relative to
- *          the pos of a dragon gold hoard in chamber.
+ * Purpose: generate the position relative to a given pos
+ *          in chamber. if canBeSame is true the new position
+ *          can be the same as the given pos
  * Returns: vector<int> position of the dragon
  */
-vector<int> Board::generateDragonPos(vector<int> pos, int chamber) {
+vector<int> Board::generateNearbyPos(vector<int> pos, int chamber, bool canBeSame) {
     // random x and y each between -1 and 1
-	int x = rand() % 2 - 1;
-	int y = rand() % 2 - 1;
+	int x = rand() % 3 - 1;
+	int y = rand() % 3 - 1;
     // make sure x and y are not BOTH 0 AND the pos is valid
     Chamber *ch = chambers[chamber];
     int col = ch->getTopCol();
     int row = ch->getTopRow();
-	while((x == 0 && y == 0) || 
+	while((!canBeSame && x == 0 && y == 0) || 
             !(ch->isValidTile(pos[0] + x - col, pos[1] + y - row))) {
-		x = rand() % 2 - 1;
-		y = rand() % 2 - 1;
+		x = rand() % 3 - 1;
+		y = rand() % 3 - 1;
 	}
 	vector<int> position = pos;
 	position[0] += x;
@@ -532,7 +533,7 @@ void Board::generateGold() {
 			goldPiles[i] = new Gold(position, 1);
 		else if(random == 7) { // dragon hoard
 			goldPiles[i] = new Gold(position, 6);
-			vector<int> dragonPosition = generateDragonPos(position, chamber);
+			vector<int> dragonPosition = generateNearbyPos(position, chamber, false);
 			dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i]));
 			modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
             ch->setValid(dragonPosition[0] - ch->getTopCol(),
