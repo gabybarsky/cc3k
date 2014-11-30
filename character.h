@@ -26,7 +26,7 @@ class Character {
 	std::string getSpecial();
     std::vector<int> getPosition();
 	//virtual void attack() = 0;
-	~Character();
+	virtual ~Character() = 0;
 };
 
 #endif
