@@ -178,6 +178,7 @@ void Board::moveFloor() {
     vector<int> playerPos = chambers[random]->generatePosition();
     player->setPosition(playerPos);
     player->setChamber(random);
+    player->resetStats();
 
     generateFloor();
     insertPlayer();

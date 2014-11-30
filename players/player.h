@@ -12,6 +12,8 @@ class Player : public Character {
     std::string race;
     std::string action;
     char prevTile;
+    int defaultAtk;
+    int defaultDef;
  public:
 	Player(int hp, int atk, int def, int chamber, std::vector<int> &pos, std::string race);
 	virtual ~Player();
@@ -32,5 +34,6 @@ class Player : public Character {
 	void addHp(int amt);
 	void addAtk(int amt);
 	void addDef(int amt);
+    void resetStats();
 };
 #endif

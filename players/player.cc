@@ -12,6 +12,8 @@ Player::Player(int hp, int atk, int def, int chamber, vector<int>&pos, string ra
     floor = 0;
     prevTile = '.';
     action = "Player character has spawned.";
+    defaultAtk = atk;
+    defaultDef = def;
 }
 
 /*
@@ -125,19 +127,42 @@ int Player::getGold() {
     return gold;
 }
 
+/*
+ * Purpose: add amt hp to player. Does not exceed cap hp
+ * Returns: Nothing
+ */
 void Player::addHp(int amt) {
-	if(hp+amt<=max)
-		hp+=amt;
+	if(hp + amt <= maxHp)
+		hp += amt;
+    else
+        hp = maxHp;
 }
 
+/*
+ * Purpose: add amt atk to player. Does not go below 0
+ * Returns: Nothing
+ */
 void Player::addAtk(int amt) {
-	if(hp+amt>=0)
-		atk+=amt;
+	if(atk + amt >= 0)
+		atk += amt;
 }
 
+/*
+ * Purpose: add amt def to player. Does not go below 0
+ * Returns: Nothing
+ */
 void Player::addDef(int amt) {
-	if(def+amt>=0)
-		def+=amt;
+	if(def + amt >= 0)
+		def += amt;
+}
+
+/*
+ * Purpose: reset stats to base stats
+ * Returns: Nothing
+ */
+void Player::resetStats() {
+    atk = defaultAtk;
+    def = defaultDef;
 }
 
 /*
