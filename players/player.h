@@ -11,7 +11,6 @@ class Player : public Character {
     int chamber;
     std::string race;
     std::string action;
-    char prevTile;
     int defaultAtk;
     int defaultDef;
  public:
@@ -26,7 +25,6 @@ class Player : public Character {
     std::string getAction();
     void addAction(std::string action);
     void setAction(std::string action);
-    char getPrevTile();
     void setPrevTile(char tile);
     void setPosition(std::vector<int> pos);
     void addGold(int quantity);

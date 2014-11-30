@@ -259,7 +259,7 @@ void Board::updatePlayer(string direction) {
 
     // if stepping onto a doorway between chambers and tunnels
     } else if (moveTile == '+') {
-        commitMove(moveTile, prevPos, newPos);
+        commitMove(moveTile, prevPos, newPos, player);
         if (player->getChamber() != -1) {
             validateTile(true, prevPos, player->getChamber());
         }
@@ -267,7 +267,7 @@ void Board::updatePlayer(string direction) {
 
     // if walking in a tunnel
     } else if (moveTile == '#') {
-        commitMove(moveTile, prevPos, newPos);
+        commitMove(moveTile, prevPos, newPos, player);
 
     // if interact with stairs
     } else if (moveTile == '\\') {
@@ -292,7 +292,7 @@ void Board::updatePlayer(string direction) {
                 validateTile(true, prevPos, player->getChamber());
             }
             validateTile(false, newPos, player->getChamber());
-            commitMove(moveTile, prevPos, newPos);
+            commitMove(moveTile, prevPos, newPos, player);
         } else {
             // error case. Should NEVER reach this spot. Ghost invalidation has occured
             player->setPosition(prevPos);
@@ -333,7 +333,7 @@ void Board::updatePlayer(string direction) {
                 // gold will be grabbed. Deletion can be done in cleanup
                 int quantity = goldPiles[i]->getQuantity();
                 player->addGold(quantity);
-                commitMove('.', prevPos, newPos);
+                commitMove('.', prevPos, newPos, player);
 				stringstream actionStream;
 				actionStream<<" and finds "<<quantity<<((quantity == 1) ? " piece" : " pieces")<<" of gold!";
                 string action = actionStream.str();
@@ -359,10 +359,10 @@ void Board::validateTile(bool valid, vector<int> pos, int chamber) {
  *          and newPos to desired tiles and set players new previous tile
  * Returns: Nothing
  */
-void Board::commitMove(char moveTile, vector<int> prevPos, vector<int> newPos) {
-    modifyLocation(prevPos[0], prevPos[1], player->getPrevTile());
-    player->setPrevTile(moveTile);
-    modifyLocation(newPos[0], newPos[1], player->getSymbol());
+void Board::commitMove(char moveTile, vector<int> prevPos, vector<int> newPos, Character *c) {
+    modifyLocation(prevPos[0], prevPos[1], c->getPrevTile());
+    c->setPrevTile(moveTile);
+    modifyLocation(newPos[0], newPos[1], c->getSymbol());
 }
 
 /*

@@ -13,6 +13,7 @@ class Character {
 	char symbol;
 	std::string special;
     std::vector<int> position;
+    char prevTile;
 	
  public:
 	Character(int hp, int atk, int def, char sym, std::vector<int> &pos);
@@ -23,6 +24,8 @@ class Character {
 	char getSymbol();
 	std::string getSpecial();
     std::vector<int> getPosition();
+    char getPrevTile();
+    virtual void setPrevTile(char tile);
 	//virtual void attack() = 0;
 	virtual ~Character() = 0;
 };

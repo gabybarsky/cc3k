@@ -32,7 +32,7 @@ class Board {
     void generateFloor();
     void generateChambers();
     char playerSelect();
-    void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos);
+    void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos, Character *c);
     void modifyChamber(std::vector<int> newPos);
 	Enemy* generateEnemy(char race);
 	std::vector<int> generateDragonPos(std::vector<int> pos, int chamber);

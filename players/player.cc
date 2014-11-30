@@ -88,14 +88,6 @@ void Player::setAction(string action) {
 }
 
 /*
- * Purpose: Getter method for prevTile
- * Returns: prevTile
- */
-char Player::getPrevTile() {
-    return prevTile;
-}
-
-/*
  * Purpose: Setter method for prevTile
  * Returns: Nothing
  */
