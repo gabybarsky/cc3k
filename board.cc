@@ -288,11 +288,39 @@ void Board::updatePlayer(string direction) {
         player->setAction("PC tries to use Potion but there is no Potion around!");
 
     // if attack command but no enemy in the direction
-    } else if(attack && moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
+    } else if(attack) { 
+		if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
            moveTile != 'O' && moveTile != 'M' && moveTile != 'D' && moveTile != 'L') {
-        player->setPosition(prevPos);
-        player->setAction("PC tries to attack but there is no Enemy around!");
-
+			player->setPosition(prevPos);
+			player->setAction("PC tries to attack but there is no Enemy around!");
+		} else {
+			for(int i = 0; i < 20; i++) {
+				if(enemies[i]->getPosition() == newPos) {
+					int result = player->attack(enemies[i]);
+					if(enemies[i]->getRace()=="Merchant")
+						makeMerchantsHostile();
+					if(result == -1) { //Player died
+						player->setAction("PC has been slain");
+						resetGame();
+						return;
+					}
+					else if(result == 0) { //Nobody died
+						break;
+					}
+					else { //Gauranteed that result is 1, enemy died
+						if(enemies[i]->getRace()=="Human") {
+							player->addGold(4);	
+						}
+						else if(enemies[i]->getRace()!="Dragon") {
+							player->addGold(rand() % 2 + 1);
+						}
+						modifyLocation(newPos[0], newPos[1], '.');
+						validateTile(true, newPos, player->getChamber());
+						break;
+					}
+				}
+			}
+		}
     // if collision with a wall
     } else if(moveTile == '|' || moveTile == '-') {
         player->setPosition(prevPos);
@@ -583,5 +611,13 @@ void Board::generateGold() {
         // add gold symbol to map, and invalidate its position
 		modifyLocation(position[0], position[1], 'G');
         ch->setValid(position[0] - ch->getTopCol(), position[1] - ch->getTopRow(), false);
+	}
+}
+
+void Board::makeMerchantsHostile() {
+	for(int i = 0; i < 20; i++) {
+		if(enemies[i]->getRace() == "Merchant") {
+			enemies[i]->setHostile();
+		}
 	}
 }

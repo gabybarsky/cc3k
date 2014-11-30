@@ -6,8 +6,8 @@ using namespace std;
  */
 Enemy::Enemy(int hp, int atk, int def, char symbol, bool hostile, 
 			 int chamber, std::vector<int> pos, std::string race) 
-				: Character(hp, atk, def, symbol, pos), hostile(hostile), 
-							chamber(chamber), race(race) {		
+				: Character(hp, atk, def, symbol, pos, race), hostile(hostile), 
+							chamber(chamber) {		
 }
 
 /*
@@ -30,4 +30,11 @@ int Enemy::getChamber() {
  */
 void Enemy::move(vector<int> newPos) {
     position = newPos;
+}
+/*
+ * Purpose: Makes an enemy hostile
+ * Returns: Nothing
+ */
+void Enemy::setHostile() {
+	hostile = true;
 }

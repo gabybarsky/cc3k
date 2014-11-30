@@ -43,17 +43,18 @@ class Board {
     void resetGame();
     void updatePlayer(std::string direction);
     void updateEnemies();
-    public:
-        Player *player;
+ public:
+    Player *player;
 
-        Board(std::string filename = "");
-        ~Board();
-        void printBoard();
-        char getLocation(int col, int row);
-        void modifyLocation(int col, int row, char change);
-        void moveFloor();
-        void insertPlayer();
-        void updateBoard(std::string direction);
+    Board(std::string filename = "");
+    ~Board();
+    void printBoard();
+    char getLocation(int col, int row);
+    void modifyLocation(int col, int row, char change);
+    void moveFloor();
+    void insertPlayer();
+    void updatePlayer(std::string direction);
+	void makeMerchantsHostile();
 };
 
 #endif

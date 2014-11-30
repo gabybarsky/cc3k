@@ -1,14 +1,12 @@
 #include "player.h"
-#include <iostream>
-#include <string>
 using namespace std;
 
 /*
  * Player constructor, initializes the floor, previous tile, and action
  */
 Player::Player(int hp, int atk, int def, int chamber, vector<int>&pos, string race)
-                : Character(hp, atk, def, '@', pos),
-                  gold(0), chamber(chamber), race(race) {
+                : Character(hp, atk, def, '@', pos, race),
+                  gold(0), chamber(chamber) {
     floor = 0;
     prevTile = '.';
     action = "Player character has spawned.";
@@ -19,15 +17,7 @@ Player::Player(int hp, int atk, int def, int chamber, vector<int>&pos, string ra
 /*
  * Player destructor
  */
-Player::~Player() {
-}
-
-/*
- * Purpose: Getter method for race
- * Returns: race
- */
-string Player::getRace() {
-    return race;
+Player::~Player(){
 }
 
 /*
@@ -120,17 +110,6 @@ int Player::getGold() {
 }
 
 /*
- * Purpose: add amt hp to player. Does not exceed cap hp
- * Returns: Nothing
- */
-void Player::addHp(int amt) {
-	if(hp + amt <= maxHp)
-		hp += amt;
-    else
-        hp = maxHp;
-}
-
-/*
  * Purpose: add amt atk to player. Does not go below 0
  * Returns: Nothing
  */
@@ -193,4 +172,34 @@ void Player::move(string direction) {
     } else {
         cerr<<"Invalid direction"<<endl;
     }
+}
+
+/*
+ * Purpose: Allows the player to attack an enemy
+ * Returns: Nothing
+ */
+ int Player::attack(Enemy *e) {
+	int damage = ceil((100 / (100 + e->getDef())) * atk);
+	stringstream actionStream;
+	if(damage >= e->getHp()) {
+		actionStream<<"Enemy "<<e->getRace()<<" has been slain";
+		return 1;
+	}
+	e->addHp(damage * -1);
+	actionStream<<"PC dealt "<<" damage to Enemy "<<e->getRace();
+	damage = ceil((100 / (100 + def) * e->getAtk()));
+	int random = rand() % 2;
+	action = actionStream.str();
+	if(random == 1) {
+		if(damage >= hp) {
+			actionStream<<"PC has been slain";
+			return -1;
+		}
+		addHp(damage * -1);
+		actionStream<<"Enemy "<<e->getRace()<<" dealt "<<damage<<" damage to PC";
+	}
+	else
+		actionStream<<"Enemy "<<e->getRace()<<" missed";
+	action = actionStream.str();
+	return 0;
 }

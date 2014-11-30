@@ -11,21 +11,22 @@ class Character {
 	int hp;
 	int maxHp;
 	char symbol;
-	std::string special;
     std::vector<int> position;
     char prevTile;
+	std::string race;
 	
  public:
-	Character(int hp, int atk, int def, char sym, std::vector<int> &pos);
+	Character(int hp, int atk, int def, char sym, std::vector<int> &pos, std::string race);
 	//virtual void onTurn() = 0;
 	int getAtk();
 	int getDef();
 	int getHp();
 	char getSymbol();
-	std::string getSpecial();
     std::vector<int> getPosition();
     char getPrevTile();
     virtual void setPrevTile(char tile);
+	std::string getRace();
+	void addHp(int amt);
 	//virtual void attack() = 0;
 	virtual ~Character() = 0;
 };

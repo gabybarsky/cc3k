@@ -1,15 +1,19 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 #include "../character.h"
-#include <vector>
+#include "../enemies/enemy.h"
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <sstream>
 #include <string>
+#include <vector>
 
 class Player : public Character {
  protected:
 	int gold;
     int floor;
     int chamber;
-    std::string race;
     std::string action;
     int defaultAtk;
     int defaultDef;
@@ -21,7 +25,6 @@ class Player : public Character {
     int getChamber();
     void setChamber(int chamber);
     void move(std::string direction);
-    std::string getRace();
     std::string getAction();
     void addAction(std::string action);
     void setAction(std::string action);
@@ -29,9 +32,9 @@ class Player : public Character {
     void setPosition(std::vector<int> pos);
     void addGold(int quantity);
     int getGold();
-	void addHp(int amt);
 	void addAtk(int amt);
 	void addDef(int amt);
     void resetStats();
+	int attack(Enemy *e);
 };
 #endif

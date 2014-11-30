@@ -16,5 +16,6 @@ class Enemy : public Character {
 	virtual ~Enemy();
     int getChamber();
     void move(std::vector<int> newPos);
+	void setHostile();
 };
 #endif
