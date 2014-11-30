@@ -218,11 +218,22 @@ void Board::updatePlayer(string direction) {
      * print out the associated action. If its a good move, move the player
      * and validate the old tile as well as invalidate the new player tile
      */
+    // if potion command and no potion in the direction
+    if(usePotion && moveTile != 'P') {
+        player->setPosition(prevPos);
+        player->setAction("PC tries to use Potion but there is no Potion around!");
+
+    // if attack command but no enemy in the direction
+    } else if(attack && moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
+           moveTile != 'O' && moveTile != 'M' && moveTile != 'D' && moveTile != 'L') {
+        player->setPosition(prevPos);
+        player->setAction("PC tries to attack but there is no Enemy around!");
 
     // if collision with a wall
-    if(moveTile == '|' || moveTile == '-') {
+    } else if(moveTile == '|' || moveTile == '-') {
         player->setPosition(prevPos);
         player->addAction(" and hits his head on a wall!");
+
     // if stepping onto a doorway between chambers and tunnels
     } else if (moveTile == '+') {
         commitMove(moveTile, prevPos, newPos);
@@ -245,9 +256,6 @@ void Board::updatePlayer(string direction) {
         player->setPosition(prevPos);
         player->addAction(" and almost falls into the void.");
 
-    /*
-     * MOVEMENT WITHIN A CHAMBER
-     */
     // if blank spot
     } else if(moveTile == '.') {
         // check if just entering the chamber. if true, set players new chamber
