@@ -23,3 +23,11 @@ Enemy::~Enemy() {
 int Enemy::getChamber() {
     return chamber;
 }
+
+/*
+ * Purpose: move enemy to newPos
+ * Returns: nothing
+ */
+void Enemy::move(vector<int> newPos) {
+    position = newPos;
+}

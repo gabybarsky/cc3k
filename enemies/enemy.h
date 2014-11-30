@@ -15,5 +15,6 @@ class Enemy : public Character {
 	Enemy(int hp, int atk, int def, char symbol, bool hostile, int chamber, std::vector<int> pos, std::string race);
 	virtual ~Enemy();
     int getChamber();
+    void move(std::vector<int> newPos);
 };
 #endif

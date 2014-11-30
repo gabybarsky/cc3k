@@ -140,7 +140,7 @@ int Chamber::getHeight() {
  * Returns: true if the tile specified by col, row is valid, false otherwise
  */
 bool Chamber::isValidTile(int col, int row) {
-    if(col < 0 || col > width || row < 0 || row > height)
+    if(col < 0 || col >= width || row < 0 || row >= height)
         return false;
     return validTile[col][row];
 }

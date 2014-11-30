@@ -213,6 +213,49 @@ void Board::insertPlayer() {
 }
 
 /*
+ * Purpose: update the Board
+ * Returns: Nothing
+ */
+void Board::updateBoard(string direction) {
+    if (direction == "r") {
+        resetGame();
+        return;
+    }
+    //TODO: handle attacking before all this
+    updatePlayer(direction); //TODO: make this method ONLY move the character
+    updateEnemies();
+}
+
+void Board::updateEnemies() {
+    for(int i=0; i < 20; i++) {
+        Enemy *e = enemies[i];
+        if(e->getHp() > 0) {
+            vector<int> prevPos = e->getPosition();
+            Chamber *ch = chambers[e->getChamber()];
+            bool canMove = false;
+            // check if this enemy has the ability to move. Not blocked in all directions
+            for(int i = -1; i < 1; i++) {
+                for(int j = -1; j < 1; j++) {
+                    if(i == 0 && j == 0) break;
+                    if(ch->isValidTile(prevPos[0] + i - ch->getTopCol(),
+                                       prevPos[1] + j - ch->getTopRow())) {
+                        canMove = true;
+                        break;
+                    }
+                }
+            }
+            
+            if(canMove) {
+                vector<int> newPos = generateNearbyPos(prevPos, e->getChamber(), true);
+                e->move(newPos);
+                validateTile(true, prevPos, e->getChamber());
+                validateTile(false, newPos, e->getChamber());
+                commitMove('.', prevPos, newPos, e); 
+            }
+        }
+    }
+}
+/*
  * Purpose: update a players position in the map. Check for collisions
  *          and obstacles in way as well as interaction with other objects
  * Returns: Nothing
@@ -226,12 +269,10 @@ void Board::updatePlayer(string direction) {
     } else if (direction[0] == 'a') {
         attack = true;
         direction.erase(0, 1);
-    } else if (direction == "r") {
-        resetGame();
-        return;
     }
     vector<int> prevPos = player->getPosition(); // store previous position for reference
     player->move(direction); //move the player in the desired direction
+    //TODO: set so invalid move doesnt make everything else move
     vector<int> newPos = player->getPosition(); // store new position for reference
     char moveTile = getLocation(newPos[0], newPos[1]); // get the tile player moves to
 

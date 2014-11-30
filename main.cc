@@ -29,7 +29,7 @@ int main() {
     string c;
     cin >> c;
     while(!cin.eof()) {
-        grid->updatePlayer(c);
+        grid->updateBoard(c);
         grid->printBoard();
         cin >> c;
     }
