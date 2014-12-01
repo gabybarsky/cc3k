@@ -49,6 +49,17 @@ Board::~Board() {
 }
 
 /*
+ * Purpose: Determine if game is won
+ * Returns: true if top floor (6), false otherwise
+ */
+bool Board::hasWon() {
+    if (player->getFloor() == 5) {
+        return true;
+    }
+    return false;
+}
+
+/*
  * Purpose: modify a certain character in the Board.
  *          map[row][column] gets changed to the new char change
  * Returns: Nothing

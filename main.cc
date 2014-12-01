@@ -18,6 +18,16 @@ For Attack and Potion you must be within 1 tile\n\
 Restart: r" << endl << endl;
 }
 
+void win() {
+    cout << endl <<
+"CONGRATULATIONS!\n\
+You have successfully made it through the dungeon.\n\
+Player, you are the new supreme overlord of the dungeon.\n\
+Be good to the civilians, they didn't mean to attack you all the time.\n\
+(Yes they did, but they didn't have control over it).\n\
+Your gold will be shipped to your home address in 5-10 business days." << endl;
+}
+
 int main() {
     srand(time(NULL));
     printBeginning();
@@ -30,8 +40,15 @@ int main() {
     cin >> c;
     while(!cin.eof()) {
         grid->updateBoard(c);
+
+        if(grid->hasWon()) {
+            win();
+            break;
+        }
         grid->printBoard();
         cin >> c;
     }
+
+    delete grid;
     return 0;
 }

@@ -53,6 +53,7 @@ class Board {
         void pickupGold(std::vector<int> position);
         void modifyChamber(std::vector<int> newPos);
         std::string getPotionName(std::vector<int> position);
+        bool hasWon();
 };
 
 #endif
