@@ -31,7 +31,7 @@ Your gold will be shipped to your home address in 5-10 business days." << endl;
 void quit() {
     cout << endl <<
 "Sorry for making the game too hard\n\
-Good luck next time." << endl;
+Better luck next time." << endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -62,6 +62,12 @@ int main(int argc, char *argv[]) {
            quit();
            break;
         }
+		while (!(c[0] == 'a' || c[0] == 'u' || c == "no" || c == "so" || c == "ea" || c == "we"
+			|| c == "ne" || c == "se" || c == "nw" || c == "sw" || c == "r")) {
+			cin.clear();
+			cout << "Enter a valid command: ";
+			cin >> c;
+		}
         grid->updateBoard(c);
 
         if(grid->hasWon()) {

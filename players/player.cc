@@ -200,8 +200,8 @@ bool Player::changePosition(string direction) {
         position[0] -= 1;
         action = "PC moves SouthWest. ";
     } else {
-        cerr<<"Invalid direction. "<<endl;
-        return false;
+        cerr<<"Invalid direction. Please re-enter: ";
+		return false;
     }
     return true;
 }

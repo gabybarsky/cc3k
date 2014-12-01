@@ -84,10 +84,12 @@ void Board::createBoard() {
         getline(*in, row);
         map[i] = row;
     }
-    generateChambers();
-    generatePotions();
-    generateGold();
-    generateEnemies();
+	generateChambers();
+	if(file==""||file=="grid.txt") {
+		generatePotions();
+		generateGold();
+		generateEnemies();
+	}
     delete in;
 }
 
