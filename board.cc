@@ -49,6 +49,17 @@ Board::~Board() {
 }
 
 /*
+ * Purpose: Determine if game is won
+ * Returns: true if top floor (6), false otherwise
+ */
+bool Board::hasWon() {
+    if (player->getFloor() == 5) {
+        return true;
+    }
+    return false;
+}
+
+/*
  * Purpose: modify a certain character in the Board.
  *          map[row][column] gets changed to the new char change
  * Returns: Nothing
@@ -254,6 +265,19 @@ bool Board::isValidTile(int chamber, int col, int row) {
 }
 
 /*
+ * Purpose: get the name of the specific potion
+ * Returns: string name
+ */
+string Board::getPotionName(vector<int> position) {
+    for(int i = 0; i < 10; i++) {
+        if(potions[i]->getPosition() == position) {
+            return potions[i]->getName();
+        }
+    }
+    return NULL;
+}
+
+/*
  * Purpose: update the Board
  * Returns: Nothing
  */
@@ -351,6 +375,7 @@ void Board::updatePlayer(string direction) {
                 // Refer to gold pickup for more info
                 player->setAction("PC uses " + potions[i]->getName());
                 potions[i]->use(*player);
+                player->learnPotion(potions[i]->getName());
                 modifyLocation(newPos[0], newPos[1], '.');
                 validateTile(true, newPos, player->getChamber());
             }
@@ -415,7 +440,7 @@ void Board::modifyChamber(vector<int> newPos) {
  * Purpose: generate the position relative to a given pos
  *          in chamber. if canBeSame is true the new position
  *          can be the same as the given pos
- * Returns: vector<int> position of the dragon
+ * Returns: vector<int> position 
  */
 vector<int> Board::generateNearbyPos(vector<int> pos, int chamber, bool canBeSame) {
     // random x and y each between -1 and 1

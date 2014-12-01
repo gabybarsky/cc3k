@@ -148,6 +148,25 @@ void Player::resetStats() {
 }
 
 /*
+ * Purpose: learn a new potion
+ * Returns: Nothing
+ */
+void Player::learnPotion(string name) {
+    potionKnowledge[name] = true;
+}
+
+/*
+ * Purpose: does player have knowldege of this potion
+ * Returns: true if yes, false otherwise
+ */
+bool Player::hasKnowledge(string name) {
+    if(potionKnowledge.count(name)) {
+        return true;
+    }
+    return false;
+}
+
+/*
  * Purpose: Moves the player in the specified direction
  * Returns: Nothing
  */
@@ -240,19 +259,25 @@ void Player::move(string direction) {
         } else {
             // error case. Should NEVER reach this spot. Ghost invalidation occured
             setPosition(prevPos);
-            addAction("OH NO WHATS GOING ON THERES A GHOST!");
+            addAction("OH NO WHATS GOING ON THERES A GHOST! ");
         }
 
     // if attempt to walk into an enemy
     } else if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
             moveTile == 'O' || moveTile == 'M' || moveTile == 'D' || moveTile == 'L') {
         setPosition(prevPos);
-        addAction("He walks straight into an Enemy! OH NOES!");
+        addAction("He walks straight into an Enemy! OH NOES! ");
 
     // if attempt to walk into a potion
     } else if(moveTile == 'P') {
+        string name = board->getPotionName(position);
         setPosition(prevPos);
-        addAction("He sees an unknown Potion!");
+        addAction("He sees an unknown Potion! ");
+        if(hasKnowledge(name)) {
+            addAction(" and see a " + name + " Potion! ");
+        } else {
+            addAction(" and sees an unknown Potion! ");
+        }
 
     // if walking over Gold pick it up
     } else if(moveTile == 'G') {
