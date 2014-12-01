@@ -46,6 +46,10 @@ void Enemy::setHostile() {
 	hostile = true;
 }
 
+bool Enemy::isHostile() {
+	return hostile;
+}
+
 int Enemy::attack(Player *p) {
     int damage = ceil((100.0 / (100 + p->getDef()) * atk));
 	int random = rand() % 2;
@@ -58,10 +62,10 @@ int Enemy::attack(Player *p) {
 			return 1;
 		}   
 		p->addHp(damage * -1);
-		actionStream<<"Enemy "<<race<<" dealt "<<damage<<" damage to PC";
+		actionStream<<"Enemy "<<race<<" ("<<hp<<"HP) dealt "<<damage<<" damage to PC. ";
 	}   
 	else
-		actionStream<<"Enemy "<<getRace()<<" missed";
-	p->setAction(actionStream.str());
+		actionStream<<"Enemy "<<race<<" ("<<hp<<"HP) missed. ";
+	p->addAction(actionStream.str());
 	return 0; 
 }   

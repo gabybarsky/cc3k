@@ -273,7 +273,16 @@ void Board::updateBoard(string direction) {
  */
 void Board::updateEnemies() {
     for(int i=0; i < 20; i++) {
-        if(enemies[i]->getHp() > 0) {
+		if(player->isNearby(enemies[i]) && enemies[i]->isHostile() 
+			&& getLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1]) != '.') {
+			int result = enemies[i]->attack(player);
+			if(result == 1) { //Player died
+				printBoard();
+				resetGame();
+				return;	
+			}
+		}
+        else if(getLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1]) != '.') {
             enemies[i]->move();
         }
     }
@@ -309,13 +318,13 @@ void Board::updatePlayer(string direction) {
 
     // if potion command and no potion in the direction
     if(usePotion && moveTile != 'P') {
-        player->setAction("PC tries to use Potion but there is no Potion around!");
+        player->setAction("PC tries to use Potion but there is no Potion around! ");
 
         // if attack command but no enemy in the direction
     } else if(attack) { 
         if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
                 moveTile != 'O' && moveTile != 'M' && moveTile != 'L') {
-            player->setAction("PC tries to attack but there is no Enemy around!");
+            player->setAction("PC tries to attack but there is no Enemy around! ");
         } else {
             for(int i = 0; i < 20; i++) {
                 if(enemies[i]->getPosition() == newPos) {
@@ -325,21 +334,11 @@ void Board::updatePlayer(string direction) {
                     if(result == 1) { //Enemy died
                         if(enemies[i]->getRace()=="Human") {
                             player->addGold(4);	
-                        }
-                        else if(enemies[i]->getRace()!="Dragon") {
+                        } else if(enemies[i]->getRace()!="Dragon") {
                             player->addGold(rand() % 2 + 1);
                         }
                         modifyLocation(newPos[0], newPos[1], '.');
                         validateTile(true, newPos, player->getChamber());
-                    }
-                    else { //The enemy didn't die
-                        printBoard();
-                        result = enemies[i]->attack(player);
-                        if(result == 1) { //Player died
-                            printBoard();
-                            resetGame();
-                            return;
-                        }
                     }
                 }
             }
@@ -368,7 +367,7 @@ void Board::pickupGold(vector<int> position) {
             int quantity = goldPiles[i]->getQuantity();
             player->addGold(quantity);
             stringstream actionStream;
-            actionStream << " and finds " << quantity << ((quantity == 1) ? " piece" : " pieces") << " of gold!";
+            actionStream << "He finds " << quantity << ((quantity == 1) ? " piece" : " pieces") << " of gold!";
             player->addAction(actionStream.str());
             break;
         }

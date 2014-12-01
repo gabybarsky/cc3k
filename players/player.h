@@ -37,5 +37,6 @@ class Player : public Character {
 	void addDef(int amt);
     void resetStats();
 	int attack(Character *e);
+	bool isNearby(Character *e);
 };
 #endif

@@ -154,34 +154,34 @@ void Player::resetStats() {
 bool Player::changePosition(string direction) {
     if(direction == "no") {
         position[1] -= 1;
-        action = "PC moves North";
+        action = "PC moves North. ";
     } else if (direction == "so") {
         position[1] += 1;
-        action = "PC moves South";
+        action = "PC moves South. ";
     } else if (direction == "ea") {
         position[0] += 1;
-        action = "PC moves East";
+        action = "PC moves East. ";
     } else if (direction == "we") {
         position[0] -= 1;
-        action = "PC moves West";
+        action = "PC moves West. ";
     } else if (direction == "ne") {
         position[1] -= 1;
         position[0] += 1;
-        action = "PC moves NorthEast";
+        action = "PC moves NorthEast. ";
     } else if (direction == "nw") {
         position[1] -= 1;
         position[0] -= 1;
-        action = "PC moves NorthWest";
+        action = "PC moves NorthWest. ";
     } else if (direction == "se") {
         position[1] += 1;
         position[0] += 1;
-        action = "PC moves SouthEast";
+        action = "PC moves SouthEast. ";
     } else if (direction == "sw") {
         position[1] += 1;
         position[0] -= 1;
-        action = "PC moves SouthWest";
+        action = "PC moves SouthWest. ";
     } else {
-        cerr<<"Invalid direction"<<endl;
+        cerr<<"Invalid direction. "<<endl;
         return false;
     }
     return true;
@@ -205,7 +205,7 @@ void Player::move(string direction) {
     // if collision with a wall
     if (moveTile == '|' || moveTile == '-') {
         setPosition(prevPos);
-        addAction(" and hits his head on a wall!");
+        addAction("He hits his head on a wall! ");
 
     // if stepping on doorway between chambers and tunnels
     } else if (moveTile == '+') {
@@ -240,19 +240,19 @@ void Player::move(string direction) {
         } else {
             // error case. Should NEVER reach this spot. Ghost invalidation occured
             setPosition(prevPos);
-            addAction(" OH NO WHATS GOING ON THERES A GHOST!");
+            addAction("OH NO WHATS GOING ON THERES A GHOST!");
         }
 
     // if attempt to walk into an enemy
     } else if(moveTile == 'H' || moveTile == 'W' || moveTile == 'E' ||
             moveTile == 'O' || moveTile == 'M' || moveTile == 'D' || moveTile == 'L') {
         setPosition(prevPos);
-        addAction(" and walks straight into an Enemy! OH NOES!");
+        addAction("He walks straight into an Enemy! OH NOES!");
 
     // if attempt to walk into a potion
     } else if(moveTile == 'P') {
         setPosition(prevPos);
-        addAction(" and sees an unknown Potion!");
+        addAction("He sees an unknown Potion!");
 
     // if walking over Gold pick it up
     } else if(moveTile == 'G') {
@@ -268,19 +268,26 @@ void Player::move(string direction) {
  */
 int Player::attack(Character *e) {
 	double modifier = (100.0 / (100 + e->getDef())) * atk;
-	cerr<<modifier<<endl;
 	int damage = ceil(modifier);
-	cerr<<damage<<endl;
 	stringstream actionStream;
 	if(damage >= e->getHp()) {
-		actionStream<<"Enemy "<<e->getRace()<<" has been slain";
+		actionStream<<"Enemy "<<e->getRace()<<" has been slain. ";
 		action = actionStream.str();
 		return 1;
 	}
 	e->addHp(damage * -1);
-	actionStream<<"PC dealt "<<damage<<" damage to Enemy "<<e->getRace();
-	action = actionStream.str();
+	actionStream<<"PC dealt "<<damage<<" damage to Enemy "<<e->getRace()<<". ";
+	action += actionStream.str();
 	actionStream.str("");
 	return 0;
 }
 
+bool Player::isNearby(Character *e) {
+	vector<int> playerPos = getPosition();
+	vector<int> enemyPos = e->getPosition();
+	if((playerPos[0]-enemyPos[0] <= 1)&&(playerPos[0]-enemyPos[0] >= -1)
+		&&(playerPos[1]-enemyPos[1] <= 1)&&(playerPos[1]-enemyPos[1]>= -1))
+		return true;
+	else
+		return false;
+}

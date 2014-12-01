@@ -19,6 +19,7 @@ class Enemy : public Character {
 	virtual ~Enemy();
     int getChamber();
 	void setHostile();
+	bool isHostile();
 	int attack(Player *p);
     void move(std::string direction = "");
 };
