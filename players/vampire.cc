@@ -15,7 +15,10 @@ Vampire::Vampire(int chamber, vector<int> pos, Board *board)
  */
 int Vampire::attack(Character *e) {
 	int result = Player::attack(e);
-	hp+=5;
+	if(e->getRace() == "Dwarf")
+		hp-=5;
+	else
+		hp+=5;
 	return result;
 }
 

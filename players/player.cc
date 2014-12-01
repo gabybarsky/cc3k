@@ -294,13 +294,21 @@ void Player::move(string direction) {
 int Player::attack(Character *e) {
 	int damage = ceil((100.0 / (100 + e->getDef())) * atk);
 	stringstream actionStream;
+	if(e->getRace() == "Halfling") {
+		int random = rand() % 2;
+		if(random == 0) {
+			actionStream<<"PC was beguiled and missed! ";
+			action += actionStream.str();
+			return 0;
+		}
+	}
     e->addHp(damage * -1);
 	if(e->getHp() <= 0) {
 		actionStream<<"Enemy "<<e->getRace()<<" has been slain. ";
 		action = actionStream.str();
 		return 1;
 	}
-	actionStream<<"PC dealt "<<damage<<" damage to Enemy "<<e->getRace()<<". ";
+	actionStream<<"PC dealt "<<damage<<" damage to Enemy "<<e->getRace()<<" ("<<e->getHp()<<"HP). ";
 	action += actionStream.str();
 	actionStream.str("");
 	return 0;

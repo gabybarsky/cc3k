@@ -20,7 +20,7 @@ class Enemy : public Character {
     int getChamber();
 	void setHostile();
 	bool isHostile();
-	int attack(Player *p);
+	virtual int attack(Player *p);
     void move(std::string direction = "");
 };
 #endif

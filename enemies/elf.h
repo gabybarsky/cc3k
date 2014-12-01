@@ -5,6 +5,7 @@
 class Elf : public Enemy {
  public:
 	Elf(bool hostile, int chamber, std::vector<int> pos, Board *board);
+	int attack(Player *p);
 	~Elf();
 };
 #endif

@@ -403,7 +403,7 @@ void Board::pickupGold(vector<int> position) {
             int quantity = goldPiles[i]->getQuantity();
             player->addGold(quantity);
             stringstream actionStream;
-            actionStream << "He finds " << quantity << ((quantity == 1) ? " piece" : " pieces") << " of gold!";
+            actionStream << "He finds " << quantity << ((quantity == 1) ? " piece" : " pieces") << " of gold! ";
             player->addAction(actionStream.str());
             break;
         }
