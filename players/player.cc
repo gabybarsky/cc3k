@@ -295,12 +295,12 @@ int Player::attack(Character *e) {
 	double modifier = (100.0 / (100 + e->getDef())) * atk;
 	int damage = ceil(modifier);
 	stringstream actionStream;
-	if(damage >= e->getHp()) {
+    e->addHp(damage * -1);
+	if(e->getHp() <= 0) {
 		actionStream<<"Enemy "<<e->getRace()<<" has been slain. ";
 		action = actionStream.str();
 		return 1;
 	}
-	e->addHp(damage * -1);
 	actionStream<<"PC dealt "<<damage<<" damage to Enemy "<<e->getRace()<<". ";
 	action += actionStream.str();
 	actionStream.str("");

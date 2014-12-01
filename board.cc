@@ -300,17 +300,18 @@ void Board::updateBoard(string direction) {
  */
 void Board::updateEnemies() {
     for(int i=0; i < 20; i++) {
-		if(player->isNearby(enemies[i]) && enemies[i]->isHostile() 
-			&& getLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1]) != '.') {
-			int result = enemies[i]->attack(player);
-			if(result == 1) { //Player died
-				printBoard();
-				resetGame();
-				return;	
-			}
-		}
-        else if(getLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1]) != '.') {
-            enemies[i]->move();
+        if(enemies[i]->getHp() > 0) {
+		    if(player->isNearby(enemies[i]) && enemies[i]->isHostile()) { 
+			    int result = enemies[i]->attack(player);
+			    if(result == 1) { //Player died
+				    printBoard();
+				    resetGame();
+				    return;	
+			    }
+		    }
+            else if(getLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1]) != '.') {
+                enemies[i]->move();
+            }
         }
     }
 }
