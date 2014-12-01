@@ -16,11 +16,11 @@ class Player : public Character {
     int floor;
     int chamber;
     std::string action;
-    int defaultAtk;
-    int defaultDef;
+    double defaultAtk;
+    double defaultDef;
     std::map<std::string, bool> potionKnowledge;
  public:
-	Player(int hp, int atk, int def, int chamber, std::vector<int> &pos, std::string race, Board *board);
+	Player(int hp, double atk, double def, int chamber, std::vector<int> &pos, std::string race, Board *board);
 	virtual ~Player();
     void upFloor(int chamber);
     int getFloor();
@@ -35,8 +35,8 @@ class Player : public Character {
     void addGold(int quantity);
     int getGold();
     std::string getGoldStr();
-	void addAtk(int amt);
-	void addDef(int amt);
+	void addAtk(double amt);
+	void addDef(double amt);
     void resetStats();
 	int attack(Character *e);
 	bool isNearby(Character *e);

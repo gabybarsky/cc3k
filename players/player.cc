@@ -8,7 +8,7 @@ using namespace std;
 /*
  * Player constructor, initializes the floor, previous tile, and action
  */
-Player::Player(int hp, int atk, int def, int chamber, vector<int>&pos, string race, Board *board)
+Player::Player(int hp, double atk, double def, int chamber, vector<int>&pos, string race, Board *board)
                 : Character(hp, atk, def, '@', pos, race, board),
                   gold(0), chamber(chamber) {
     floor = 0;
@@ -124,7 +124,7 @@ string Player::getGoldStr() {
  * Purpose: add amt atk to player. Does not go below 0
  * Returns: Nothing
  */
-void Player::addAtk(int amt) {
+void Player::addAtk(double amt) {
 	if(atk + amt >= 0)
 		atk += amt;
 }
@@ -133,7 +133,7 @@ void Player::addAtk(int amt) {
  * Purpose: add amt def to player. Does not go below 0
  * Returns: Nothing
  */
-void Player::addDef(int amt) {
+void Player::addDef(double amt) {
 	if(def + amt >= 0)
 		def += amt;
 }
@@ -292,8 +292,7 @@ void Player::move(string direction) {
  * Returns: Nothing
  */
 int Player::attack(Character *e) {
-	double modifier = (100.0 / (100 + e->getDef())) * atk;
-	int damage = ceil(modifier);
+	int damage = ceil((100.0 / (100 + e->getDef())) * atk);
 	stringstream actionStream;
 	if(damage >= e->getHp()) {
 		actionStream<<"Enemy "<<e->getRace()<<" has been slain. ";

@@ -34,12 +34,15 @@ Potion::Potion(string type, vector<int> pos) : Item(type, pos, 1) {
  * Returns: Nothing
  */
 void Potion::use(Player &p) {
+	double multiplier = 1;
+	if(p.getRace() == "Drow")
+		multiplier = 1.5;
 	if(stat=="hp")
-		p.addHp(value);
+		p.addHp(multiplier * value);
 	else if(stat=="atk")
-		p.addAtk(value);
+		p.addAtk(multiplier * value);
 	else
-		p.addDef(value);
+		p.addDef(multiplier * value);
 }
 
 /*

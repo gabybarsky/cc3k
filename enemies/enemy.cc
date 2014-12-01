@@ -6,7 +6,7 @@ using namespace std;
 /*
  * Enemy constructor, called by all subclasses, calls Character's constructor
  */
-Enemy::Enemy(int hp, int atk, int def, char symbol, bool hostile, 
+Enemy::Enemy(int hp, double atk, double def, char symbol, bool hostile, 
 			 int chamber, std::vector<int> pos, std::string race, Board *board) 
 				: Character(hp, atk, def, symbol, pos, race, board), hostile(hostile), 
 							chamber(chamber) {		

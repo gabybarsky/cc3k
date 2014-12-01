@@ -8,8 +8,8 @@ class Board;
 
 class Character {
  protected:
-	int atk;
-	int def;
+	double atk;
+	double def;
 	int hp;
 	int maxHp;
 	char symbol;
@@ -18,12 +18,12 @@ class Character {
     char prevTile;
     Board *board;
  public:
-	Character(int hp, int atk, int def, char sym, std::vector<int> &pos, std::string race, Board *board);
+	Character(int hp, double atk, double def, char sym, std::vector<int> &pos, std::string race, Board *board);
     virtual ~Character();
 	//virtual void onTurn() = 0;
     virtual void move(std::string direction = "") = 0;
-	int getAtk();
-	int getDef();
+	double getAtk();
+	double getDef();
 	int getHp();
 	char getSymbol();
     std::vector<int> getPosition();

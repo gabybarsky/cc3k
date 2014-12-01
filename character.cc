@@ -6,7 +6,7 @@ using namespace std;
 /*
  * 7 parameter constructor for character
  */
-Character::Character(int hp, int atk, int def, char sym, vector<int> &pos, string race, Board *board) 
+Character::Character(int hp, double atk, double def, char sym, vector<int> &pos, string race, Board *board) 
 						: atk(atk), def(def), hp(hp), maxHp(hp), symbol(sym), position(pos), race(race), board(board) {
 	prevTile = '.';
 }
@@ -21,7 +21,7 @@ Character::~Character() {
  * Purpose: Getter method for atk
  * Returns: atk
  */
-int Character::getAtk() {
+double Character::getAtk() {
 	return atk;
 }
 
@@ -29,7 +29,7 @@ int Character::getAtk() {
  * Purpose: Getter method for def
  * Returns: def
  */
-int Character::getDef() {
+double Character::getDef() {
 	return def;
 }
 
