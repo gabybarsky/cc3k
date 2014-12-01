@@ -15,7 +15,7 @@ Movement: (no,so,ea,we,nw,ne,sw,se)\n\
 Attack: a + direction\n\
 Potion: u + direction\n\
 For Attack and Potion you must be within 1 tile\n\
-Restart: r" << endl << endl;
+Restart: r, Quit: q" << endl << endl;
 }
 
 void win() {
