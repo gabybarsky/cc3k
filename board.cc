@@ -291,6 +291,8 @@ void Board::updateBoard(string direction) {
     }
     //TODO: handle attacking before all this
     updatePlayer(direction); //TODO: make this method ONLY move the character
+	if(player->getRace() == "Troll")
+		player->addHp(10);
     updateEnemies();
 }
 
@@ -357,14 +359,19 @@ void Board::updatePlayer(string direction) {
             for(int i = 0; i < 20; i++) {
                 if(enemies[i]->getPosition() == newPos && enemies[i]->getHp() > 0) {
                     int result = player->attack(enemies[i]);
+					int gold = 0;
                     if(enemies[i]->getRace()=="Merchant")
                         makeMerchantsHostile();
                     if(result == 1) { //Enemy died
-                        if(enemies[i]->getRace()=="Human") {
-                            player->addGold(4);	
-                        } else if(enemies[i]->getRace()!="Dragon") {
-                            player->addGold(rand() % 2 + 1);
+                        if(enemies[i]->getRace() == "Human") {
+							gold += 4;
+                        } else if(enemies[i]->getRace() != "Dragon") {
+                            gold += rand() % 2 + 1;
                         }
+						if(player->getRace() == "Goblin") {
+							gold += 5;
+						}
+						player->addGold(gold);
                         modifyLocation(newPos[0], newPos[1], '.');
                         validateTile(true, newPos, player->getChamber());
                     }

@@ -6,6 +6,7 @@
 class Vampire : public Player {
  public:
 	Vampire(int chamber, std::vector<int> pos, Board *board);
+	int attack(Character *e);
 	~Vampire();
 };
 #endif
