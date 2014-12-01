@@ -303,16 +303,31 @@ void Board::updateBoard(string direction) {
 void Board::updateEnemies() {
     for(int i=0; i < 20; i++) {
         if(enemies[i]->getHp() > 0) {
-		    if(player->isNearby(enemies[i]) && enemies[i]->isHostile()) { 
-			    int result = enemies[i]->attack(player);
-			    if(result == 1) { //Player died
-				    printBoard();
-				    resetGame();
-				    return;	
-			    }
-		    }
+            if(player->isNearby(enemies[i]->getPosition()) 
+                    && enemies[i]->isHostile()) { 
+                int result = enemies[i]->attack(player);
+                if(result == 1) { //Player died
+                    printBoard();
+                    resetGame();
+                    return;	
+                }
+            }
             else if(getLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1]) != '.') {
                 enemies[i]->move();
+            }
+        }
+    }
+
+    for(int i = 0; i < dragons.size(); i++) {
+        if(dragons[i]->getHp() > 0) {
+            if(player->isNearby(dragons[i]->getPosition())
+                    || player->isNearby(dragons[i]->getHoard()->getPosition())) {
+                int result = dragons[i]->attack(player);
+                if(result == 1) { // Player died
+                    printBoard();
+                    resetGame();
+                    return;
+                }
             }
         }
     }
@@ -352,8 +367,19 @@ void Board::updatePlayer(string direction) {
 
         // if attack command but no enemy in the direction
     } else if(attack) { 
-        if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
-                moveTile != 'O' && moveTile != 'M' && moveTile != 'L') {
+        if(moveTile == 'D') {
+            for(int i = 0; i < dragons.size(); i++) {
+                if(dragons[i]->getPosition() == newPos && dragons[i]->getHp() > 0) {
+                    int result = player->attack(dragons[i]);
+                    if(result == 1) { // Enemy died
+                        dragons[i]->getHoard()->setAvailable(true);
+                        modifyLocation(newPos[0], newPos[1], '.');
+                        validateTile(true, newPos, player->getChamber());
+                    }
+                }
+            }
+        } else if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
+                moveTile != 'O' && moveTile != 'M' && moveTile != 'L' && moveTile != 'D') {
             player->setAction("PC tries to attack but there is no Enemy around! ");
         } else {
             for(int i = 0; i < 20; i++) {
@@ -363,7 +389,7 @@ void Board::updatePlayer(string direction) {
                     if(enemies[i]->getRace()=="Merchant")
                         makeMerchantsHostile();
                     if(result == 1) { //Enemy died
-                        if(enemies[i]->getRace() == "Human") {
+                        if(enemies[i]->getRace() == "Human" || enemies[i]->getRace() == "Merchant") {
 							gold += 4;
                         } else if(enemies[i]->getRace() != "Dragon") {
                             gold += rand() % 2 + 1;
@@ -377,7 +403,6 @@ void Board::updatePlayer(string direction) {
                     }
                 }
             }
-            attack = false;
         }
     } else if(moveTile == 'P' && usePotion) {
         for(int i = 0; i < 10; i++) {

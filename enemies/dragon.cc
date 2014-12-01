@@ -14,3 +14,11 @@ Dragon::Dragon(bool hostile, int chamber, vector<int> pos, Gold *hoard, Board *b
  */
 Dragon::~Dragon() {
 }
+
+/*
+ * Purpose: get dragon's hoard
+ * Returns: pointer to dragons hoard
+ */
+Gold* Dragon::getHoard() {
+    return hoard;
+}
