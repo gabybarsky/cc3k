@@ -50,7 +50,7 @@ class Board {
         void commitMove(char moveTile, std::vector<int> prevPos, std::vector<int> newPos, Character *c);
 	    std::vector<int> generateNearbyPos(std::vector<int> pos, int chamber, bool canBeSame);
         void validateTile(bool valid, std::vector<int> pos, int chamber);
-        void pickupGold(std::vector<int> position);
+        bool pickupGold(std::vector<int> position);
         void modifyChamber(std::vector<int> newPos);
         std::string getPotionName(std::vector<int> position);
         bool hasWon();

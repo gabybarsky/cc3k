@@ -281,9 +281,12 @@ void Player::move(string direction) {
 
     // if walking over Gold pick it up
     } else if(moveTile == 'G') {
-        board->pickupGold(position);
-        board->commitMove('.', prevPos, position, this);
-        board->validateTile(true, prevPos, chamber);
+        if(board->pickupGold(position)) {
+            board->commitMove('.', prevPos, position, this);
+            board->validateTile(true, prevPos, chamber);
+        } else {
+            setPosition(prevPos);
+        }
     }
 } 
 

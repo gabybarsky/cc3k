@@ -394,22 +394,27 @@ void Board::updatePlayer(string direction) {
     }
 }
 
-void Board::pickupGold(vector<int> position) {
+bool Board::pickupGold(vector<int> position) {
     for(int i = 0; i < 10; i++) {
         if(goldPiles[i]->getPosition() == position) {
             // found gold piece in array. No need to delete the memory allocation
             // since tile will no longer display 'G' and therefore no duplicate
             // gold will be grabbed. Deletion can be done in cleanup
+            if(!goldPiles[i]->isAvailable()) {
+                player->addAction("But the dragon protects its gold. ");
+                return false;
+            }
             int quantity = goldPiles[i]->getQuantity();
             player->addGold(quantity);
             stringstream actionStream;
             actionStream << "He finds " << quantity << ((quantity == 1) ? " piece" : " pieces") << " of gold!";
             player->addAction(actionStream.str());
-            break;
+            return true;
         }
     }
+    cerr << "ERROR: [Board::pickupGold]: Unkown Gold Piece" << endl;
+    return true;
 }
-
 
 /*
  * Purpose: set the chambers tile at pos to bool valid
@@ -594,11 +599,11 @@ void Board::generateGold() {
         Chamber *ch = chambers[chamber];
         vector<int> position = ch->generatePosition();
         if(random <= 4) // normal hoard
-            goldPiles[i] = new Gold(position, 2);
+            goldPiles[i] = new Gold(position, 2, true);
         else if(random <= 6) // small hoard
-            goldPiles[i] = new Gold(position, 1);
+            goldPiles[i] = new Gold(position, 1, true);
         else if(random == 7) { // dragon hoard
-            goldPiles[i] = new Gold(position, 6);
+            goldPiles[i] = new Gold(position, 6, false);
             vector<int> dragonPosition = generateNearbyPos(position, chamber, false);
             dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i], this));
             modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
