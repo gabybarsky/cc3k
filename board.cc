@@ -137,6 +137,9 @@ void Board::cleanBoard() {
     for(int i = 0; i < 10; i++) {
         delete goldPiles[i];
     }
+    for(int i = 0; i < dragons.size(); i++) {
+        delete dragons[i];
+    }
 }
 
 void Board::resetGame() {
