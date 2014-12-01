@@ -39,7 +39,7 @@ class Player : public Character {
 	void addDef(double amt);
     void resetStats();
 	virtual int attack(Character *e);
-	bool isNearby(Character *e);
+	bool isNearby(std::vector<int> other);
     void learnPotion(std::string name);
     bool hasKnowledge(std::string name);
 };

@@ -281,9 +281,12 @@ void Player::move(string direction) {
 
     // if walking over Gold pick it up
     } else if(moveTile == 'G') {
-        board->pickupGold(position);
-        board->commitMove('.', prevPos, position, this);
-        board->validateTile(true, prevPos, chamber);
+        if(board->pickupGold(position)) {
+            board->commitMove('.', prevPos, position, this);
+            board->validateTile(true, prevPos, chamber);
+        } else {
+            setPosition(prevPos);
+        }
     }
 } 
 
@@ -314,11 +317,13 @@ int Player::attack(Character *e) {
 	return 0;
 }
 
-bool Player::isNearby(Character *e) {
-	vector<int> playerPos = getPosition();
-	vector<int> enemyPos = e->getPosition();
-	if((playerPos[0]-enemyPos[0] <= 1)&&(playerPos[0]-enemyPos[0] >= -1)
-		&&(playerPos[1]-enemyPos[1] <= 1)&&(playerPos[1]-enemyPos[1]>= -1))
+/*
+ * Purpose: Check if player is nearby other position
+ * Returns: true if it is within 1 tile, false otherwise
+ */
+bool Player::isNearby(vector<int> other) {
+	if((position[0] - other[0] <= 1)&&(position[0]-other[0] >= -1)
+		&&(position[1]-other[1] <= 1)&&(position[1]-other[1]>= -1))
 		return true;
 	else
 		return false;

@@ -303,16 +303,31 @@ void Board::updateBoard(string direction) {
 void Board::updateEnemies() {
     for(int i=0; i < 20; i++) {
         if(enemies[i]->getHp() > 0) {
-		    if(player->isNearby(enemies[i]) && enemies[i]->isHostile()) { 
-			    int result = enemies[i]->attack(player);
-			    if(result == 1) { //Player died
-				    printBoard();
-				    resetGame();
-				    return;	
-			    }
-		    }
+            if(player->isNearby(enemies[i]->getPosition()) 
+                    && enemies[i]->isHostile()) { 
+                int result = enemies[i]->attack(player);
+                if(result == 1) { //Player died
+                    printBoard();
+                    resetGame();
+                    return;	
+                }
+            }
             else if(getLocation(enemies[i]->getPosition()[0], enemies[i]->getPosition()[1]) != '.') {
                 enemies[i]->move();
+            }
+        }
+    }
+
+    for(int i = 0; i < dragons.size(); i++) {
+        if(dragons[i]->getHp() > 0) {
+            if(player->isNearby(dragons[i]->getPosition())
+                    || player->isNearby(dragons[i]->getHoard()->getPosition())) {
+                int result = dragons[i]->attack(player);
+                if(result == 1) { // Player died
+                    printBoard();
+                    resetGame();
+                    return;
+                }
             }
         }
     }
@@ -352,8 +367,19 @@ void Board::updatePlayer(string direction) {
 
         // if attack command but no enemy in the direction
     } else if(attack) { 
-        if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
-                moveTile != 'O' && moveTile != 'M' && moveTile != 'L') {
+        if(moveTile == 'D') {
+            for(int i = 0; i < dragons.size(); i++) {
+                if(dragons[i]->getPosition() == newPos && dragons[i]->getHp() > 0) {
+                    int result = player->attack(dragons[i]);
+                    if(result == 1) { // Enemy died
+                        dragons[i]->getHoard()->setAvailable(true);
+                        modifyLocation(newPos[0], newPos[1], '.');
+                        validateTile(true, newPos, player->getChamber());
+                    }
+                }
+            }
+        } else if(moveTile != 'H' && moveTile != 'W' && moveTile != 'E' &&
+                moveTile != 'O' && moveTile != 'M' && moveTile != 'L' && moveTile != 'D') {
             player->setAction("PC tries to attack but there is no Enemy around! ");
         } else {
             for(int i = 0; i < 20; i++) {
@@ -363,7 +389,7 @@ void Board::updatePlayer(string direction) {
                     if(enemies[i]->getRace()=="Merchant")
                         makeMerchantsHostile();
                     if(result == 1) { //Enemy died
-                        if(enemies[i]->getRace() == "Human") {
+                        if(enemies[i]->getRace() == "Human" || enemies[i]->getRace() == "Merchant") {
 							gold += 4;
                         } else if(enemies[i]->getRace() != "Dragon") {
                             gold += rand() % 2 + 1;
@@ -377,7 +403,6 @@ void Board::updatePlayer(string direction) {
                     }
                 }
             }
-            attack = false;
         }
     } else if(moveTile == 'P' && usePotion) {
         for(int i = 0; i < 10; i++) {
@@ -394,22 +419,27 @@ void Board::updatePlayer(string direction) {
     }
 }
 
-void Board::pickupGold(vector<int> position) {
+bool Board::pickupGold(vector<int> position) {
     for(int i = 0; i < 10; i++) {
         if(goldPiles[i]->getPosition() == position) {
             // found gold piece in array. No need to delete the memory allocation
             // since tile will no longer display 'G' and therefore no duplicate
             // gold will be grabbed. Deletion can be done in cleanup
+            if(!goldPiles[i]->isAvailable()) {
+                player->addAction("But the dragon protects its gold. ");
+                return false;
+            }
             int quantity = goldPiles[i]->getQuantity();
             player->addGold(quantity);
             stringstream actionStream;
             actionStream << "He finds " << quantity << ((quantity == 1) ? " piece" : " pieces") << " of gold! ";
             player->addAction(actionStream.str());
-            break;
+            return true;
         }
     }
+    cerr << "ERROR: [Board::pickupGold]: Unkown Gold Piece" << endl;
+    return true;
 }
-
 
 /*
  * Purpose: set the chambers tile at pos to bool valid
@@ -594,11 +624,11 @@ void Board::generateGold() {
         Chamber *ch = chambers[chamber];
         vector<int> position = ch->generatePosition();
         if(random <= 4) // normal hoard
-            goldPiles[i] = new Gold(position, 2);
+            goldPiles[i] = new Gold(position, 2, true);
         else if(random <= 6) // small hoard
-            goldPiles[i] = new Gold(position, 1);
+            goldPiles[i] = new Gold(position, 1, true);
         else if(random == 7) { // dragon hoard
-            goldPiles[i] = new Gold(position, 6);
+            goldPiles[i] = new Gold(position, 6, false);
             vector<int> dragonPosition = generateNearbyPos(position, chamber, false);
             dragons.push_back(new Dragon(true, chamber, dragonPosition, goldPiles[i], this));
             modifyLocation(dragonPosition[0], dragonPosition[1], 'D');
