@@ -136,11 +136,14 @@ void Board::cleanBoard() {
     for(int i = 0; i < 20; i++) {
         delete enemies[i];
     }
-    for(int i = 0; i < 10; i++) {
-        delete goldPiles[i];
-    }
     for(int i = 0; i < dragons.size(); i++) {
         delete dragons[i];
+    }
+    while(!dragons.empty()) {
+        dragons.pop_back();
+    }
+    for(int i =0; i < 10; i++) {
+        delete goldPiles[i];
     }
 }
 
