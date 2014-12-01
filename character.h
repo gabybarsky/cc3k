@@ -20,7 +20,6 @@ class Character {
  public:
 	Character(int hp, double atk, double def, char sym, std::vector<int> &pos, std::string race, Board *board);
     virtual ~Character();
-	//virtual void onTurn() = 0;
     virtual void move(std::string direction = "") = 0;
 	double getAtk();
 	double getDef();
@@ -32,7 +31,6 @@ class Character {
     virtual void setPrevTile(char tile);
 	std::string getRace();
 	void addHp(int amt);
-	//virtual void attack() = 0;
 };
 
 #endif
