@@ -351,7 +351,7 @@ void Board::updatePlayer(string direction) {
             player->setAction("PC tries to attack but there is no Enemy around! ");
         } else {
             for(int i = 0; i < 20; i++) {
-                if(enemies[i]->getPosition() == newPos) {
+                if(enemies[i]->getPosition() == newPos && enemies[i]->getHp() > 0) {
                     int result = player->attack(enemies[i]);
                     if(enemies[i]->getRace()=="Merchant")
                         makeMerchantsHostile();
