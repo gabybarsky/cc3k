@@ -55,27 +55,35 @@ int main(int argc, char *argv[]) {
     //grid->modifyLocation(77, 24, 0, 'c');
     grid->printBoard();
 
-    string c;
-    cin >> c;
+    string command;
+    cin >> command;
     while(!cin.eof()) {
-        if (c == "q") {
+        if (command == "q") {
            quit();
            break;
         }
-		while (!(c[0] == 'a' || c[0] == 'u' || c == "no" || c == "so" || c == "ea" || c == "we"
+        string c = command;
+        if(c[0] == 'a' || c[0] == 'u') {
+            c.erase(0, 1);
+        }
+		while (!(c == "no" || c == "so" || c == "ea" || c == "we"
 			|| c == "ne" || c == "se" || c == "nw" || c == "sw" || c == "r")) {
 			cin.clear();
 			cout << "Enter a valid command: ";
-			cin >> c;
+			cin >> command;
+            c = command;
+            if(c[0] == 'a' || c[0] == 'u') {
+                c.erase(0, 1);
+            }
 		}
-        grid->updateBoard(c);
+        grid->updateBoard(command);
 
         if(grid->hasWon()) {
             win();
             break;
         }
         grid->printBoard();
-        cin >> c;
+        cin >> command;
     }
 
     delete grid;
