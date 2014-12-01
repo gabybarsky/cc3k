@@ -28,10 +28,29 @@ Be good to the civilians, they didn't mean to attack you all the time.\n\
 Your gold will be shipped to your home address in 5-10 business days." << endl;
 }
 
-int main() {
-    srand(time(NULL));
+void quit() {
+    cout << endl <<
+"Sorry for making the game too hard\n\
+Good luck next time." << endl;
+}
+
+int main(int argc, char *argv[]) {
+    string file = "grid.txt";
+    if(argc == 1) {
+        srand(time(NULL));
+    } else if (argc == 2) {
+        file = argv[1];
+        srand(time(NULL));
+    } else if (argc == 3) {
+        file = argv[1];
+        stringstream ss;
+        ss << argv[2];
+        int seed;
+        ss >> seed;
+        srand(seed);
+    }
     printBeginning();
-    Board *grid = new Board("grid.txt");
+    Board *grid = new Board(file);
     //grid->modifyLocation(0, 0, 'a');
     //grid->modifyLocation(77, 24, 0, 'c');
     grid->printBoard();
@@ -39,6 +58,10 @@ int main() {
     string c;
     cin >> c;
     while(!cin.eof()) {
+        if (c == "q") {
+           quit();
+           break;
+        }
         grid->updateBoard(c);
 
         if(grid->hasWon()) {
